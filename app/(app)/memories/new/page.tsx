@@ -99,6 +99,7 @@ export default function NewMemoryPage() {
 
       // Upload photos
       let coverPath: string | null = null;
+      let coverUrl: string | null = null;
       const uploadedPhotos: Array<{
         storagePath: string;
         thumbPath: string;
@@ -125,7 +126,7 @@ export default function NewMemoryPage() {
         await uploadBytes(thumbRef, thumbBlob, { contentType: "image/jpeg" });
         const thumbUrl = await getDownloadURL(thumbRef);
 
-        if (i === 0) coverPath = fullPath;
+        if (i === 0) { coverPath = fullPath; coverUrl = photoUrl; }
         uploadedPhotos.push({ storagePath: fullPath, thumbPath, photoUrl, thumbUrl, sortOrder: i });
       }
 
@@ -141,6 +142,7 @@ export default function NewMemoryPage() {
         content: content.trim(),
         photoCount: uploadedPhotos.length,
         coverPath,
+        coverUrl,
         wishlistId: fromWishId ?? null,
         createdBy: myUid,
         updatedBy: myUid,

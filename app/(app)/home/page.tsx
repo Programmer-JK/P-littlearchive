@@ -339,8 +339,12 @@ function RecentMemoryCard({
     >
       <div
         className="relative aspect-square w-full overflow-hidden"
-        style={{ background: memory.coverPath ? undefined : bg }}
+        style={{ background: memory.coverUrl ? undefined : bg }}
       >
+        {memory.coverUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={memory.coverUrl} alt={memory.title} className="w-full h-full object-cover" />
+        )}
         {memory.photoCount > 1 && (
           <span
             className="absolute right-[5px] top-[5px] px-[6px] py-[1px] rounded-full text-[11px]"

@@ -36,6 +36,7 @@ export interface Memory {
   content: string;
   photoCount: number;
   coverPath: string | null;
+  coverUrl: string | null;
   wishlistId: string | null;
   createdBy: string;
   updatedBy: string;
