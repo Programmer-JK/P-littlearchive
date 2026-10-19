@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm create next-app@latest . --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npm install -g pnpm)",
+      "Bash(npx --version)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(npm --version)",
+      "Bash(corepack enable pnpm)",
+      "Bash(pnpm --version)",
+      "Bash(export NVM_NODE=\"$HOME/.nvm/versions/node/v24.11.1/bin\")",
+      "Bash(export PATH=\"$NVM_NODE:$PATH\")",
+      "Bash(npm install -g pnpm --force)",
+      "Bash(pnpm create next-app@latest littlearchive --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(pnpm add firebase zod react-hook-form @hookform/resolvers date-fns lucide-react)",
+      "Bash(pnpm approve-builds)",
+      "Bash(pnpm install)",
+      "Bash(pnpm build)",
+      "Bash(for file in \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/home/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/album/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/wishlist/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/timeline/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/memories/new/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/notes/new/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/\\(app\\)/settings/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/login/page.tsx\" \"/Users/jk/develop/P-littlearchive/app/onboarding/page.tsx\")",
+      "Bash(do)",
+      "Bash(if ! head -3 \"$file\")",
+      "Bash(pnpm add firebase-admin)",
+      "Bash(~/.nvm/versions/node/v24.11.1/bin/pnpm add firebase-admin)",
+      "Bash(~/.nvm/versions/node/v24.11.1/bin/pnpm build)",
+      "Bash(PATH=~/.nvm/versions/node/v24.11.1/bin:$PATH pnpm build)",
+      "Bash(PATH=~/.nvm/versions/node/v24.11.1/bin:$PATH ~/.nvm/versions/node/v24.11.1/bin/pnpm build)",
+      "Bash(PATH=~/.nvm/versions/node/v24.11.1/bin:$PATH ~/.nvm/versions/node/v24.11.1/bin/node node_modules/.bin/next build)",
+      "Bash(PATH=~/.nvm/versions/node/v24.11.1/bin:$PATH ~/.nvm/versions/node/v24.11.1/bin/npx next build)",
+      "Bash(export PATH=~/.nvm/versions/node/v24.11.1/bin:$PATH)",
+      "Bash(~/.nvm/versions/node/v24.11.1/bin/node ./node_modules/next/dist/bin/next build)",
+      "Bash(~/.nvm/versions/node/v24.11.1/bin/node ~/.nvm/versions/node/v24.11.1/bin/node)",
+      "Bash(~/.nvm/versions/node/v24.11.1/bin/node /Users/jk/develop/P-littlearchive/node_modules/next/dist/bin/next build)",
+      "Bash(/Users/jk/.nvm/versions/node/v24.11.1/bin/node /Users/jk/.nvm/versions/node/v24.11.1/bin/next build)",
+      "Bash(/Users/jk/.nvm/versions/node/v24.11.1/bin/node /Users/jk/develop/P-littlearchive/node_modules/.bin/next build)",
+      "Bash(NODE_PATH=/Users/jk/develop/P-littlearchive/node_modules /Users/jk/.nvm/versions/node/v24.11.1/bin/node /Users/jk/develop/P-littlearchive/node_modules/next/dist/bin/next build)",
+      "Bash(PATH=/Users/jk/.nvm/versions/node/v24.11.1/bin:/usr/local/bin:/usr/bin:/bin /Users/jk/.nvm/versions/node/v24.11.1/bin/node /Users/jk/develop/P-littlearchive/node_modules/next/dist/bin/next build --no-turbopack)",
+      "Bash(PATH=/Users/jk/.nvm/versions/node/v24.11.1/bin:/usr/local/bin:/usr/bin:/bin /Users/jk/.nvm/versions/node/v24.11.1/bin/node /Users/jk/develop/P-littlearchive/node_modules/next/dist/bin/next build)",
+      "Bash(PATH=/Users/jk/.nvm/versions/node/v24.11.1/bin:$PATH npx tsc --noEmit)",
+      "Bash(PATH=/Users/jk/.nvm/versions/node/v24.11.1/bin:$PATH pnpm exec tsc --noEmit)"
+    ],
+    "additionalDirectories": [
+      "/Users/jk/develop/P-littlearchive/app/invite",
+      "/Users/jk/develop/P-littlearchive/app/(app)/memories/[id]",
+      "/Users/jk/develop/P-littlearchive"
+    ]
+  }
+}

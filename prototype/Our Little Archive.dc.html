@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&amp;family=Gowun+Dodum&amp;family=Nanum+Pen+Script&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E7DFD1;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#50634A}a:hover{color:#2F2B25}
+input,textarea,button{font-family:inherit}
+input[type=date]::-webkit-calendar-picker-indicator{opacity:.5}
+::-webkit-scrollbar{display:none}
+@keyframes olaUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes olaIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes olaFade{from{opacity:0}to{opacity:1}}
+@keyframes olaPulse{0%,100%{opacity:.3}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="position:relative;isolation:isolate;height:100%;background:#F2EDE1;color:#2F2B25;font-family:'Gowun Dodum',sans-serif;overflow:hidden">
+
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Login" style="position:absolute;inset:0;display:flex;flex-direction:column;padding:72px 28px 44px;animation:olaFade .4s">
+  <div style="margin:4px -14px 0"><img src="assets/login-polaroids.png" alt="함께하는 시간, 우리의 첫 데이트, 함께 가고 싶은 곳 — 커플 일러스트 폴라로이드" style="display:block;width:100%;height:auto"></div>
+  <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;text-align:center">
+    <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;line-height:1">Our Little Archive</div>
+    <div style="font-family:'Gowun Batang',serif;font-size:15px;color:#6E665A">우리의 작은 기록 보관함</div>
+  </div>
+  <div style="flex:1"></div>
+  <sc-if value="{{ loginStart }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <button onClick="{{ googleStart }}" style="height:54px;border-radius:12px;border:1px solid #D9CFBE;background:#FFFDF8;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;color:#2F2B25;cursor:pointer" style-active="background:#F2EDE1">
+        <span style="width:22px;height:22px;border-radius:50%;border:1.5px solid #6E665A;display:flex;align-items:center;justify-content:center;font:600 12px system-ui,sans-serif;color:#6E665A">G</span>Google로 계속하기
+      </button>
+      <div style="text-align:center;font-size:13px;color:#9A9182;line-height:1.5">초대된 두 계정만 들어올 수 있어요</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ loginChoose }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF8;border:1px solid #E3DACB;border-radius:14px;overflow:hidden;animation:olaFade .25s">
+      <div style="padding:14px 18px 10px;font-size:13px;color:#9A9182">계정 선택</div>
+      <button onClick="{{ chooseHer }}" style="width:100%;min-height:58px;padding:0 18px;border:0;border-top:1px solid #EFE8DC;background:transparent;display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left" style-hover="background:#F7F2E9">
+        <span style="width:34px;height:34px;border-radius:50%;background:#C5CDB6;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:15px;color:#2F2B25">{{ herInitial }}</span>
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;color:#2F2B25">{{ herName }}</span><span style="font-size:12px;color:#9A9182">s•••••@gmail.com</span></span>
+      </button>
+      <button onClick="{{ chooseMe }}" style="width:100%;min-height:58px;padding:0 18px;border:0;border-top:1px solid #EFE8DC;background:transparent;display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left" style-hover="background:#F7F2E9">
+        <span style="width:34px;height:34px;border-radius:50%;background:#E2C6B2;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:15px;color:#2F2B25">{{ meInitial }}</span>
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;color:#2F2B25">{{ meName }}</span><span style="font-size:12px;color:#9A9182">m•••••@gmail.com</span></span>
+      </button>
+      <button onClick="{{ chooseOther }}" style="width:100%;min-height:52px;padding:0 18px;border:0;border-top:1px solid #EFE8DC;background:transparent;font-size:14px;color:#6E665A;cursor:pointer;text-align:left" style-hover="background:#F7F2E9">다른 계정 사용</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ loginDenied }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:14px;animation:olaFade .25s">
+      <div style="padding:18px;border-radius:14px;background:#F1E2D7;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'Gowun Batang',serif;font-size:17px;color:#7A4A33">초대된 계정이 아니에요</div>
+        <div style="font-size:14px;line-height:1.55;color:#6B5246">이 공간은 성은과 나, 두 계정만 사용할 수 있어요. 로그인은 됐지만 기록은 열리지 않아요.</div>
+      </div>
+      <button onClick="{{ backLogin }}" style="height:50px;border-radius:12px;border:1px solid #D9CFBE;background:transparent;font-size:15px;color:#2F2B25;cursor:pointer">다시 선택하기</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ scrollRef }}" style="position:absolute;inset:0;overflow-y:auto;padding:60px 0 120px">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Home" style="padding:0 20px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:6px">
+    <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+      <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;line-height:1">Our Little Archive</div>
+      <div style="font-size:12px;color:#9A9182">{{ coupleName }}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:2px">
+    <button onClick="{{ openSettings }}" aria-label="설정" style="width:44px;height:44px;border:0;background:transparent;color:#6E665A;cursor:pointer;display:flex;align-items:center;justify-content:center">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+    </button>
+    <button onClick="{{ openSettings }}" aria-label="우리 공간 설정" style="height:44px;padding:0 4px;border:0;background:transparent;display:flex;align-items:center;cursor:pointer">
+      <span style="width:34px;height:34px;border-radius:50%;background:#C5CDB6;border:2px solid #F2EDE1;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:14px;color:#2F2B25">{{ herInitial }}</span>
+      <span style="width:34px;height:34px;margin-left:-10px;border-radius:50%;background:#E2C6B2;border:2px solid #F2EDE1;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:14px;color:#2F2B25">{{ meInitial }}</span>
+    </button>
+    </div>
+  </div>
+
+  <div style="position:relative;background:#FBF8F1;border:1px solid #EAE2D4;border-radius:6px;padding:26px 22px 18px;box-shadow:0 1px 2px rgba(60,40,20,.06),0 14px 28px -18px rgba(60,40,20,.35)">
+    <div style="position:absolute;top:-11px;left:50%;width:78px;height:22px;margin-left:-39px;background:rgba(222,208,170,.78);transform:rotate(-2deg)"></div>
+    <div style="font-size:13px;color:#6E665A">함께한 지</div>
+    <div style="display:flex;align-items:baseline;gap:6px;margin-top:4px">
+      <span style="font-family:'Instrument Serif',serif;font-size:82px;line-height:.9;letter-spacing:-.01em">{{ dayCount }}</span>
+      <span style="font-family:'Gowun Batang',serif;font-size:20px">일째</span>
+    </div>
+    <div style="font-size:13px;color:#9A9182;margin-top:8px">{{ startLong }}부터</div>
+    <div style="border-top:1px dashed #D9CFBE;margin:18px 0 6px"></div>
+    <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:12px;min-height:44px">
+        <div style="flex:1;min-width:0;display:flex;align-items:baseline;gap:8px">
+          <span style="font-family:'Gowun Batang',serif;font-size:16px">{{ u.title }}</span>
+          <span style="font-size:12px;color:#9A9182">{{ u.date }}</span>
+        </div>
+        <span style="padding:4px 10px;border-radius:999px;font-size:12px;background:{{ u.pillBg }};color:{{ u.pillFg }};border:1px solid {{ u.pillBd }}">{{ u.dd }}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ openNotes }}" style="margin-top:-12px;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 12px;border-radius:12px;border:1px solid #E5CFC3;background:#F7EDE5;cursor:pointer;text-align:left">
+      <span style="flex:none;width:50px;height:62px;padding:3px 3px 10px;background:#FFFDF8;box-shadow:0 4px 10px -5px rgba(60,40,20,.45);transform:rotate(-5deg)"><span style="display:block;width:100%;height:100%;background:{{ unread.photo.bg }}"></span></span>
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-family:'Gowun Batang',serif;font-size:16px;color:#2F2B25">{{ unread.title }}</span><span style="font-size:13px;color:#8A6A5A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ unread.sub }}</span></span>
+      <span style="font-size:13px;color:#A4583C">보기 →</span>
+    </button>
+  </sc-if>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button onClick="{{ newMemory }}" style="height:52px;border-radius:12px;border:0;background:#50634A;color:#FBF8F1;font-size:15px;cursor:pointer" style-active="background:#435540">+ 추억 남기기</button>
+    <button onClick="{{ newWish }}" style="height:52px;border-radius:12px;border:1px solid #CFC5B3;background:transparent;color:#2F2B25;font-size:15px;cursor:pointer" style-active="background:#EBE4D7">+ 하고 싶은 것</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Gowun Batang',serif;font-size:19px">최근 추억</div>
+      <button onClick="{{ goAlbum }}" style="height:36px;border:0;background:transparent;font-size:13px;color:#6E665A;cursor:pointer;padding:0">모두 보기 →</button>
+    </div>
+    <div style="display:flex;gap:16px;overflow-x:auto;margin:0 -20px;padding:8px 20px 16px">
+      <sc-for list="{{ recent }}" as="m" hint-placeholder-count="3">
+        <button onClick="{{ m.open }}" style="flex:none;width:136px;padding:7px 7px 10px;border:0;background:#FFFDF8;box-shadow:0 8px 18px -10px rgba(60,40,20,.4);transform:rotate({{ m.rot }}deg);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px">
+          <div style="position:relative;aspect-ratio:1;background:{{ m.cover.bg }};overflow:hidden">
+            <sc-if value="{{ m.hasMore }}"><span style="position:absolute;right:5px;top:5px;padding:1px 6px;border-radius:999px;background:rgba(251,248,241,.85);font-size:11px;color:#4A443B">{{ m.more }}</span></sc-if>
+          </div>
+          <div style="font-family:'Nanum Pen Script',cursive;font-size:19px;line-height:1;color:#3A352E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.title }}</div>
+          <div style="font-size:11px;color:#9A9182">{{ m.dateDot }}</div>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Gowun Batang',serif;font-size:19px">다음 계획</div>
+      <button onClick="{{ goWish }}" style="height:36px;border:0;background:transparent;font-size:13px;color:#6E665A;cursor:pointer;padding:0">전체 →</button>
+    </div>
+    <div style="background:#FBF8F1;border:1px solid #EAE2D4;border-radius:12px;overflow:hidden">
+      <sc-for list="{{ nextPlans }}" as="w" hint-placeholder-count="3">
+        <button onClick="{{ w.edit }}" style="width:100%;min-height:62px;padding:12px 16px;border:0;border-bottom:1px solid #EFE8DC;background:transparent;display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left" style-hover="background:#F7F2E9">
+          <span style="width:10px;height:10px;border-radius:50%;flex:none;background:{{ w.dot }}"></span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:15px;color:#2F2B25">{{ w.title }}</span>
+            <span style="font-size:12px;color:#9A9182">{{ w.sub }}</span>
+          </span>
+          <sc-if value="{{ w.hasDd }}"><span style="font-family:'Instrument Serif',serif;font-size:18px;color:#50634A">{{ w.dd }}</span></sc-if>
+        </button>
+      </sc-for>
+      <sc-if value="{{ noPlans }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px 16px;font-size:14px;color:#9A9182;text-align:center">하고 싶은 것을 모두 해냈어요. 새로 하나 담아 볼까요?</div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAlbum }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Album" style="display:flex;flex-direction:column;gap:16px">
+  <div style="padding:6px 20px 0;display:flex;flex-direction:column;gap:4px">
+    <div style="font-family:'Gowun Batang',serif;font-size:26px">우리의 순간들</div>
+    <div style="font-size:13px;color:#9A9182">{{ albumCount }}</div>
+  </div>
+  <div style="margin:0 20px;padding:4px;border-radius:12px;background:#EAE3D6;display:grid;grid-template-columns:1fr 1fr;gap:4px">
+    <sc-for list="{{ albumSegs }}" as="t" hint-placeholder-count="2">
+      <button onClick="{{ t.pick }}" style="height:40px;border:0;border-radius:9px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }}">{{ t.label }}<sc-if value="{{ t.hasBadge }}"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#A4583C;color:#FBF8F1;font-size:11px;display:flex;align-items:center;justify-content:center">{{ t.badge }}</span></sc-if></button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ albumTogether }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;gap:16px">
+  <div style="padding:0 20px">
+    <input value="{{ albumQuery }}" onChange="{{ setAlbumQuery }}" placeholder="제목, 장소, 메모로 찾기" style="width:100%;height:46px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+  </div>
+  <div style="display:flex;gap:8px;overflow-x:auto;padding:0 20px">
+    <sc-for list="{{ monthChips }}" as="c" hint-placeholder-count="4">
+      <button onClick="{{ c.pick }}" style="flex:none;height:36px;padding:0 14px;border-radius:999px;font-size:13px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <sc-for list="{{ albumGroups }}" as="g" hint-placeholder-count="1">
+    <div style="padding:8px 20px 0;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span style="font-family:'Gowun Batang',serif;font-size:16px">{{ g.label }}</span>
+        <span style="font-size:12px;color:#9A9182">{{ g.count }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px 16px">
+        <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="4">
+          <button onClick="{{ m.open }}" style="position:relative;padding:8px 8px 12px;border:0;background:#FFFDF8;box-shadow:0 10px 20px -12px rgba(60,40,20,.42);transform:rotate({{ m.rot }}deg);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:7px">
+            <sc-if value="{{ m.tape }}"><span style="position:absolute;top:-9px;left:50%;width:54px;height:18px;margin-left:-27px;background:rgba(222,208,170,.8);transform:rotate(3deg);z-index:1"></span></sc-if>
+            <div style="position:relative;aspect-ratio:1;background:{{ m.cover.bg }};overflow:hidden">
+              <sc-if value="{{ m.cover.hasLabel }}"><span style="position:absolute;left:7px;bottom:6px;font:10px ui-monospace,Menlo,monospace;color:rgba(47,43,37,.5)">{{ m.cover.label }}</span></sc-if>
+              <sc-if value="{{ m.hasMore }}"><span style="position:absolute;right:5px;top:5px;padding:1px 6px;border-radius:999px;background:rgba(251,248,241,.85);font-size:11px;color:#4A443B">{{ m.more }}</span></sc-if>
+            </div>
+            <div style="font-family:'Nanum Pen Script',cursive;font-size:21px;line-height:1;color:#3A352E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.title }}</div>
+            <div style="font-size:11px;color:#9A9182;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.dateDot }} · {{ m.placeShort }}</div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+  <sc-if value="{{ albumEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:40px 20px;text-align:center;display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'Nanum Pen Script',cursive;font-size:26px;color:#6E665A">아직 비어 있는 페이지</div>
+      <div style="font-size:13px;color:#9A9182">조건에 맞는 추억이 없어요</div>
+    </div>
+  </sc-if>
+  </div>
+  </sc-if>
+  <sc-if value="{{ albumNotes }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:4px 20px 0;display:flex;flex-direction:column;gap:26px">
+    <button onClick="{{ newNote }}" style="height:50px;border-radius:12px;border:1.5px dashed #BFB4A1;background:#FBF8F1;font-size:14px;color:#50634A;cursor:pointer">+ {{ partnerName }}에게 사진 보내기</button>
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="2">
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:{{ n.align }}">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#9A9182">
+          <span style="width:22px;height:22px;border-radius:50%;background:{{ n.avBg }};display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:11px;color:#2F2B25">{{ n.initial }}</span>
+          <span>{{ n.from }} → {{ n.to }} · {{ n.time }}</span>
+          <sc-if value="{{ n.isNew }}"><span style="padding:1px 7px;border-radius:999px;background:#A4583C;color:#FBF8F1;font-size:10px;letter-spacing:.04em">NEW</span></sc-if>
+          <sc-if value="{{ n.hasSeen }}"><span style="color:#7D9276">{{ n.seenLbl }}</span></sc-if>
+        </div>
+        <div style="position:relative;width:76%;padding:8px 8px 12px;background:#FFFDF8;box-shadow:0 12px 24px -14px rgba(60,40,20,.45);transform:rotate({{ n.rot }}deg);display:flex;flex-direction:column;gap:8px">
+          <div style="position:relative;aspect-ratio:4/5;background:{{ n.photo.bg }}">
+            <sc-if value="{{ n.photo.hasLabel }}"><span style="position:absolute;left:8px;bottom:6px;font:10px ui-monospace,Menlo,monospace;color:rgba(47,43,37,.5)">{{ n.photo.label }}</span></sc-if>
+          </div>
+          <sc-if value="{{ n.hasMsg }}"><div style="font-family:'Nanum Pen Script',cursive;font-size:21px;line-height:1.15;color:#3A352E;padding:0 4px;text-wrap:pretty">{{ n.message }}</div></sc-if>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ notesEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:30px 10px;text-align:center;font-size:13px;color:#9A9182">아직 주고받은 사진이 없어요</div>
+    </sc-if>
+  </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWish }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Wishlist" style="display:flex;flex-direction:column;gap:16px">
+  <div style="padding:6px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="font-family:'Gowun Batang',serif;font-size:26px">하고 싶은 것</div>
+      <div style="font-size:13px;color:#9A9182">둘이 함께 채우는 버킷리스트</div>
+    </div>
+    <button onClick="{{ newWish }}" aria-label="추가" style="width:44px;height:44px;border-radius:50%;border:1px solid #CFC5B3;background:#FBF8F1;font-size:22px;color:#2F2B25;cursor:pointer;line-height:1">+</button>
+  </div>
+  <div style="margin:0 20px;padding:4px;border-radius:12px;background:#EAE3D6;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+    <sc-for list="{{ statusTabs }}" as="t" hint-placeholder-count="3">
+      <button onClick="{{ t.pick }}" style="height:40px;border:0;border-radius:9px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }}">{{ t.label }}<span style="font-size:12px;opacity:.6">{{ t.count }}</span></button>
+    </sc-for>
+  </div>
+  <div style="display:flex;gap:8px;overflow-x:auto;padding:0 20px">
+    <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 13px;border-radius:999px;font-size:13px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ wishItems }}" as="w" hint-placeholder-count="3">
+      <div style="background:#FBF8F1;border:1px solid #EAE2D4;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+        <button onClick="{{ w.edit }}" style="border:0;background:transparent;padding:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px">
+          <span style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="padding:3px 9px;border-radius:999px;font-size:12px;background:#EFE8DC;color:#6E665A">{{ w.category }}</span>
+            <span style="padding:3px 9px;border-radius:999px;font-size:12px;background:{{ w.priBg }};color:{{ w.priFg }}">{{ w.priority }}</span>
+          </span>
+          <span style="font-family:'Gowun Batang',serif;font-size:18px;line-height:1.35;color:#2F2B25;text-wrap:pretty">{{ w.title }}</span>
+          <sc-if value="{{ w.hasMeta }}"><span style="font-size:13px;color:#6E665A;line-height:1.5">{{ w.meta }}</span></sc-if>
+        </button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px dashed #DDD3C3;padding-top:10px">
+          <span style="font-size:12px;color:#9A9182">{{ w.byLabel }}</span>
+          <button onClick="{{ w.action }}" style="height:38px;padding:0 14px;border-radius:999px;font-size:13px;cursor:pointer;background:{{ w.actBg }};color:{{ w.actFg }};border:1px solid {{ w.actBd }}">{{ w.actionLabel }}</button>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ wishEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:36px 10px;text-align:center;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'Nanum Pen Script',cursive;font-size:26px;color:#6E665A">여기는 아직 비어 있어요</div>
+        <div style="font-size:13px;color:#9A9182">가고 싶은 곳, 먹고 싶은 것을 담아 두세요</div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTimeline }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Timeline" style="display:flex;flex-direction:column;gap:18px">
+  <div style="padding:6px 20px 0;display:flex;flex-direction:column;gap:4px">
+    <div style="font-family:'Gowun Batang',serif;font-size:26px">함께했던 날</div>
+    <div style="font-size:13px;color:#9A9182">{{ timelineSub }}</div>
+  </div>
+  <sc-for list="{{ tlGroups }}" as="g" hint-placeholder-count="1">
+    <div style="padding:0 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-family:'Gowun Batang',serif;font-size:15px;color:#50634A;padding:6px 0">{{ g.label }}</div>
+      <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="2">
+        <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:0">
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:12px">
+            <span style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1">{{ m.day }}</span>
+            <span style="font-size:11px;color:#9A9182">{{ m.dow }}</span>
+          </div>
+          <div style="position:relative;border-left:1px solid #D9CFBE;padding:0 0 18px 16px;margin-left:6px">
+            <span style="position:absolute;left:-5px;top:20px;width:9px;height:9px;border-radius:50%;background:#7D9276;border:2px solid #F2EDE1"></span>
+            <button onClick="{{ m.open }}" style="width:100%;border:1px solid #EAE2D4;background:#FBF8F1;border-radius:12px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px" style-hover="border-color:#CFC5B3">
+              <span style="font-family:'Gowun Batang',serif;font-size:17px;color:#2F2B25">{{ m.title }}</span>
+              <span style="font-size:12px;color:#9A9182">{{ m.place }} · {{ m.category }}</span>
+              <span style="display:flex;gap:6px">
+                <sc-for list="{{ m.thumbs }}" as="p" hint-placeholder-count="2">
+                  <span style="position:relative;width:58px;height:58px;border-radius:4px;overflow:hidden;background:{{ p.bg }}">
+                    </span>
+                </sc-for>
+              </span>
+              <span style="font-size:14px;line-height:1.55;color:#4A443B;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ m.content }}</span>
+            </button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:88px;padding:6px 10px 26px;background:rgba(251,248,241,.94);border-top:1px solid #E3DACB;display:grid;grid-template-columns:1fr 1fr 64px 1fr 1fr;align-items:center;z-index:20">
+  <button onClick="{{ goHome }}" style="height:52px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ tabC.home }}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>
+    <span style="font-size:11px">홈</span>
+  </button>
+  <button onClick="{{ goAlbum }}" style="height:52px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ tabC.album }}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"></rect><rect x="7" y="6" width="10" height="9"></rect></svg>
+    <span style="font-size:11px">순간들</span>
+  </button>
+  <button onClick="{{ openAdd }}" aria-label="새로 기록하기" style="width:54px;height:54px;justify-self:center;margin-top:-18px;border-radius:50%;border:4px solid #F2EDE1;background:#50634A;color:#FBF8F1;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 8px 18px -8px rgba(60,40,20,.5)">+</button>
+  <button onClick="{{ goWish }}" style="height:52px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ tabC.wish }}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v17l-7-4-7 4z"></path></svg>
+    <span style="font-size:11px">하고 싶은 것</span>
+  </button>
+  <button onClick="{{ goTimeline }}" style="height:52px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ tabC.timeline }}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18"></path><circle cx="7" cy="7" r="2"></circle><circle cx="7" cy="16" r="2"></circle><path d="M11 7h9M11 16h6"></path></svg>
+    <span style="font-size:11px">타임라인</span>
+  </button>
+</div>
+
+<sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Memory detail" style="position:absolute;inset:0;z-index:30;background:#F2EDE1;overflow-y:auto;padding:54px 0 40px;animation:olaIn .28s ease-out">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+    <button onClick="{{ closeDetail }}" aria-label="뒤로" style="width:44px;height:44px;border:0;background:transparent;cursor:pointer;color:#2F2B25;display:flex;align-items:center;justify-content:center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="display:flex;gap:4px">
+      <button onClick="{{ editDetail }}" style="height:44px;padding:0 12px;border:0;background:transparent;font-size:14px;color:#50634A;cursor:pointer">수정</button>
+      <button onClick="{{ askDeleteMemory }}" style="height:44px;padding:0 12px;border:0;background:transparent;font-size:14px;color:#A4583C;cursor:pointer">삭제</button>
+    </div>
+  </div>
+  <div style="padding:10px 30px 0">
+    <div style="position:relative;padding:12px 12px 16px;background:#FFFDF8;box-shadow:0 16px 30px -18px rgba(60,40,20,.5);transform:rotate(-1deg)">
+      <div style="position:absolute;top:-10px;left:50%;width:84px;height:22px;margin-left:-42px;background:rgba(222,208,170,.8);transform:rotate(2deg);z-index:1"></div>
+      <div style="position:relative;aspect-ratio:4/5;background:{{ detail.photo.bg }};overflow:hidden">
+        <sc-if value="{{ detail.photo.hasLabel }}"><span style="position:absolute;left:10px;bottom:8px;font:11px ui-monospace,Menlo,monospace;color:rgba(47,43,37,.5)">{{ detail.photo.label }}</span></sc-if>
+        <sc-if value="{{ detail.multi }}"><span style="position:absolute;right:8px;top:8px;padding:2px 8px;border-radius:999px;background:rgba(251,248,241,.88);font-size:12px;color:#4A443B">{{ detail.counter }}</span></sc-if>
+      </div>
+      <div style="font-family:'Nanum Pen Script',cursive;font-size:26px;line-height:1;color:#3A352E;text-align:center;padding-top:12px">{{ detail.dateDot }}</div>
+    </div>
+  </div>
+  <sc-if value="{{ detail.multi }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:8px;justify-content:center;padding:18px 20px 0;flex-wrap:wrap">
+      <sc-for list="{{ detail.thumbs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.pick }}" style="position:relative;width:52px;height:52px;padding:0;border-radius:6px;overflow:hidden;cursor:pointer;background:{{ t.bg }};border:2px solid {{ t.bd }}">
+          </button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <div style="padding:26px 24px 0;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:13px;color:#6E665A">{{ detail.dateLong }}</div>
+      <div style="font-family:'Gowun Batang',serif;font-size:27px;line-height:1.3;text-wrap:pretty">{{ detail.title }}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <sc-if value="{{ detail.hasPlace }}"><span style="padding:5px 11px;border-radius:999px;font-size:13px;background:#E4E9DB;color:#3F5139">{{ detail.place }}</span></sc-if>
+      <span style="padding:5px 11px;border-radius:999px;font-size:13px;background:#EFE8DC;color:#6E665A">{{ detail.category }}</span>
+    </div>
+    <div style="padding:6px 16px;border-radius:6px;background:#FBF8F1;border:1px solid #EAE2D4;background-image:repeating-linear-gradient(transparent 0 29px,#ECE4D6 29px 30px);font-size:16px;line-height:30px;color:#3A352E;white-space:pre-wrap">{{ detail.content }}</div>
+    <sc-if value="{{ detail.hasWish }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px dashed #B9C3AC;background:#EEF1E7">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#50634A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v17l-7-4-7 4z"></path></svg>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:12px;color:#6E7A66">하고 싶은 것에서 이어진 기록</span>
+          <span style="font-size:14px;color:#2F2B25">{{ detail.wishTitle }}</span>
+        </div>
+      </div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;gap:3px;font-size:12px;color:#9A9182;padding-top:4px">
+      <span>{{ detail.authorLine }}</span>
+      <span>{{ detail.updatedLine }}</span>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasSettings }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Settings" style="position:absolute;inset:0;z-index:35;background:#F2EDE1;overflow-y:auto;padding:54px 0 48px;animation:olaIn .28s ease-out">
+  <div style="display:flex;align-items:center;gap:4px;padding:0 12px">
+    <button onClick="{{ closeSettings }}" aria-label="뒤로" style="width:44px;height:44px;border:0;background:transparent;cursor:pointer;color:#2F2B25;display:flex;align-items:center;justify-content:center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="font-family:'Gowun Batang',serif;font-size:20px">우리 공간</div>
+  </div>
+  <div style="padding:14px 20px 0;display:flex;flex-direction:column;gap:26px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">공간 이름</div>
+      <input value="{{ coupleName }}" onChange="{{ setCoupleName }}" style="width:100%;height:48px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">두 사람</div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+        <label style="min-width:0;display:flex;align-items:center;gap:8px;height:48px;padding:0 6px 0 8px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1">
+          <span style="width:30px;height:30px;flex:none;border-radius:50%;background:#C5CDB6;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:13px">{{ herInitial }}</span>
+          <input value="{{ herName }}" onChange="{{ setHerName }}" style="flex:1;min-width:0;height:40px;border:0;background:transparent;font-size:15px;color:#2F2B25;outline:none">
+        </label>
+        <label style="min-width:0;display:flex;align-items:center;gap:8px;height:48px;padding:0 6px 0 8px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1">
+          <span style="width:30px;height:30px;flex:none;border-radius:50%;background:#E2C6B2;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:13px">{{ meInitial }}</span>
+          <input value="{{ meName }}" onChange="{{ setMeName }}" style="flex:1;min-width:0;height:40px;border:0;background:transparent;font-size:15px;color:#2F2B25;outline:none">
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 8px 8px 14px;border-radius:12px;background:#FBF8F1;border:1px solid #EAE2D4;margin-top:-14px">
+      <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ inviteDot }}"></span>
+      <span style="flex:1;font-size:14px;color:#2F2B25">{{ inviteLabel }}</span>
+      <sc-if value="{{ inviteWaiting }}" hint-placeholder-val="{{ false }}"><button onClick="{{ inviteResend }}" style="height:36px;padding:0 12px;border-radius:999px;border:1px solid #B9C3AC;background:transparent;font-size:13px;color:#50634A;cursor:pointer">초대 링크 복사</button></sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">사귀기 시작한 날</div>
+      <input type="date" value="{{ startDate }}" onChange="{{ setStart }}" style="width:100%;height:48px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none">
+      <div style="font-size:12px;color:#9A9182">이 날을 1일로 세요. 100일 단위와 매년 기념일이 자동으로 표시돼요.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">기념일</div>
+      <div style="background:#FBF8F1;border:1px solid #EAE2D4;border-radius:12px;overflow:hidden">
+        <sc-for list="{{ annList }}" as="a" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 6px 6px 16px;border-bottom:1px solid #EFE8DC">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+              <span style="font-size:15px">{{ a.title }}</span>
+              <span style="font-size:12px;color:#9A9182">{{ a.sub }}</span>
+            </div>
+            <button onClick="{{ a.remove }}" aria-label="삭제" style="width:44px;height:44px;border:0;background:transparent;color:#9A9182;font-size:20px;cursor:pointer">×</button>
+          </div>
+        </sc-for>
+        <div style="padding:12px;display:flex;flex-direction:column;gap:8px;background:#F7F2E9">
+          <input value="{{ annDraft.title }}" onChange="{{ setAnnTitle }}" placeholder="기념일 이름" style="width:100%;height:44px;padding:0 12px;border-radius:8px;border:1px solid #E3DACB;background:#FFFDF8;font-size:14px;color:#2F2B25;outline:none">
+          <div style="display:flex;gap:8px">
+            <input type="date" value="{{ annDraft.date }}" onChange="{{ setAnnDate }}" style="flex:1;min-width:0;height:44px;padding:0 10px;border-radius:8px;border:1px solid #E3DACB;background:#FFFDF8;font-size:14px;color:#2F2B25;outline:none">
+            <button onClick="{{ toggleAnnRepeat }}" style="flex:none;height:44px;padding:0 12px;border-radius:8px;font-size:13px;cursor:pointer;background:{{ annRepeat.bg }};color:{{ annRepeat.fg }};border:1px solid {{ annRepeat.bd }}">매년 반복</button>
+          </div>
+          <button onClick="{{ addAnn }}" style="height:44px;border-radius:8px;border:0;background:#50634A;color:#FBF8F1;font-size:14px;cursor:pointer">기념일 추가</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">지금 로그인한 계정</div>
+      <div style="padding:4px;border-radius:12px;background:#EAE3D6;display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <button onClick="{{ viewHer }}" style="height:42px;border:0;border-radius:9px;font-size:14px;cursor:pointer;background:{{ viewerSeg.her.bg }};color:{{ viewerSeg.her.fg }}">{{ herName }}</button>
+        <button onClick="{{ viewMe }}" style="height:42px;border:0;border-radius:9px;font-size:14px;cursor:pointer;background:{{ viewerSeg.me.bg }};color:{{ viewerSeg.me.fg }}">{{ meName }}</button>
+      </div>
+      <div style="font-size:12px;color:#9A9182;line-height:1.5">두 계정은 같은 기록을 봐요. 계정을 바꿔서 한 사람이 추가한 내용이 다른 사람에게도 보이는지 확인해 보세요.</div>
+    </div>
+    <button onClick="{{ replayOb }}" style="height:50px;margin-bottom:-16px;border-radius:12px;border:1px solid #D9CFBE;background:transparent;font-size:15px;color:#2F2B25;cursor:pointer">처음 설정 다시 하기</button>
+    <button onClick="{{ logout }}" style="height:50px;border-radius:12px;border:1px solid #D9CFBE;background:transparent;font-size:15px;color:#A4583C;cursor:pointer">로그아웃</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasMemForm }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Memory form" style="position:absolute;inset:0;z-index:40;background:#F2EDE1;display:flex;flex-direction:column;animation:olaUp .32s cubic-bezier(.2,.8,.2,1)">
+  <div style="padding:54px 8px 6px;display:grid;grid-template-columns:72px 1fr 72px;align-items:center;border-bottom:1px solid #E3DACB">
+    <button onClick="{{ cancelMem }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#6E665A;cursor:pointer">취소</button>
+    <div style="text-align:center;font-family:'Gowun Batang',serif;font-size:17px">{{ memFormTitle }}</div>
+    <button onClick="{{ saveMem }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#50634A;font-weight:700;cursor:pointer">저장</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px 40px;display:flex;flex-direction:column;gap:20px">
+    <sc-if value="{{ memFromWish }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:12px 14px;border-radius:10px;background:#E4E9DB;font-size:13px;line-height:1.5;color:#3F5139">‘{{ memWishTitle }}’에서 이어서 기록해요. 저장하면 이 항목은 완료로 바뀌어요.</div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">사진</div>
+      <div style="display:flex;gap:10px;overflow-x:auto;padding:2px 0">
+        <button onClick="{{ pickPhoto }}" style="flex:none;width:86px;height:86px;border-radius:8px;border:1.5px dashed #BFB4A1;background:#FBF8F1;color:#6E665A;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+          <span style="font-size:22px;line-height:1">+</span>사진 추가
+        </button>
+        <sc-for list="{{ memPhotos }}" as="p" hint-placeholder-count="0">
+          <div style="position:relative;flex:none;width:86px;height:86px;border-radius:8px;overflow:hidden;background:{{ p.bg }}">
+            <button onClick="{{ p.remove }}" aria-label="사진 빼기" style="position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(47,43,37,.6);color:#fff;font-size:15px;line-height:1;cursor:pointer">×</button>
+          </div>
+        </sc-for>
+      </div>
+      <input type="file" accept="image/*" ref="{{ fileRef }}" onChange="{{ onFile }}" style="display:none">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">제목</div>
+      <input value="{{ memDraft.title }}" onChange="{{ mTitle }}" placeholder="그날을 한 줄로" style="width:100%;height:48px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:#6E665A">날짜</div>
+        <input type="date" value="{{ memDraft.date }}" onChange="{{ mDate }}" style="width:100%;height:48px;padding:0 10px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:14px;color:#2F2B25;outline:none">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:#6E665A">장소</div>
+        <input value="{{ memDraft.place }}" onChange="{{ mPlace }}" placeholder="어디에서" style="width:100%;height:48px;padding:0 12px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">데이트 유형</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ memCats }}" as="c" hint-placeholder-count="5">
+          <button onClick="{{ c.pick }}" style="height:38px;padding:0 15px;border-radius:999px;font-size:14px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">그날의 짧은 후기</div>
+      <textarea value="{{ memDraft.content }}" onChange="{{ mContent }}" rows="6" placeholder="기억하고 싶은 장면, 나눈 이야기" style="width:100%;padding:4px 14px;border-radius:10px;border:1px solid #E3DACB;background-color:#FBF8F1;background-image:repeating-linear-gradient(transparent 0 29px,#ECE4D6 29px 30px);background-attachment:local;font-size:16px;line-height:30px;color:#2F2B25;outline:none;resize:none"></textarea>
+    </div>
+    <sc-if value="{{ hasMemErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#A4583C">{{ memErr }}</div></sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasWishForm }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Wish form" style="position:absolute;inset:0;z-index:40;background:#F2EDE1;display:flex;flex-direction:column;animation:olaUp .32s cubic-bezier(.2,.8,.2,1)">
+  <div style="padding:54px 8px 6px;display:grid;grid-template-columns:72px 1fr 72px;align-items:center;border-bottom:1px solid #E3DACB">
+    <button onClick="{{ cancelWish }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#6E665A;cursor:pointer">취소</button>
+    <div style="text-align:center;font-family:'Gowun Batang',serif;font-size:17px">{{ wishFormTitle }}</div>
+    <button onClick="{{ saveWish }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#50634A;font-weight:700;cursor:pointer">저장</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px 40px;display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">하고 싶은 것</div>
+      <input value="{{ wishDraft.title }}" onChange="{{ wTitle }}" placeholder="예: 한강 피크닉 가기" style="width:100%;height:48px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">카테고리</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ wishCats }}" as="c" hint-placeholder-count="5">
+          <button onClick="{{ c.pick }}" style="height:38px;padding:0 15px;border-radius:999px;font-size:14px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:#6E665A">장소 <span style="color:#9A9182">· 선택</span></div>
+        <input value="{{ wishDraft.place }}" onChange="{{ wPlace }}" placeholder="어디에서" style="width:100%;height:48px;padding:0 12px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:#6E665A">예상 비용 <span style="color:#9A9182">· 선택</span></div>
+        <input type="number" inputmode="numeric" value="{{ wishDraft.cost }}" onChange="{{ wCost }}" placeholder="원" style="width:100%;height:48px;padding:0 12px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">얼마나 하고 싶어요?</div>
+      <div style="padding:4px;border-radius:12px;background:#EAE3D6;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <sc-for list="{{ wishPris }}" as="c" hint-placeholder-count="3">
+          <button onClick="{{ c.pick }}" style="height:40px;border:0;border-radius:9px;font-size:14px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">상태</div>
+      <div style="padding:4px;border-radius:12px;background:#EAE3D6;display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <sc-for list="{{ wishStats }}" as="c" hint-placeholder-count="2">
+          <button onClick="{{ c.pick }}" style="height:40px;border:0;border-radius:9px;font-size:14px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">언제쯤 <span style="color:#9A9182">· 선택</span></div>
+      <input type="date" value="{{ wishDraft.targetDate }}" onChange="{{ wDate }}" style="width:100%;height:48px;padding:0 12px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:15px;color:#2F2B25;outline:none">
+    </div>
+    <sc-if value="{{ hasWishErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#A4583C">{{ wishErr }}</div></sc-if>
+    <sc-if value="{{ wishEditing }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ askDeleteWish }}" style="height:48px;border-radius:12px;border:1px solid #E5CFC3;background:transparent;font-size:15px;color:#A4583C;cursor:pointer">이 항목 지우기</button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasNoteForm }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Send photo" style="position:absolute;inset:0;z-index:40;background:#F2EDE1;display:flex;flex-direction:column;animation:olaUp .32s cubic-bezier(.2,.8,.2,1)">
+  <div style="padding:54px 8px 6px;display:grid;grid-template-columns:72px 1fr 72px;align-items:center;border-bottom:1px solid #E3DACB">
+    <button onClick="{{ cancelNote }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#6E665A;cursor:pointer">취소</button>
+    <div style="text-align:center;font-family:'Gowun Batang',serif;font-size:17px">사진 보내기</div>
+    <button onClick="{{ saveNote }}" style="height:44px;border:0;background:transparent;font-size:15px;color:#50634A;font-weight:700;cursor:pointer">보내기</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:22px 32px 40px;display:flex;flex-direction:column;gap:18px">
+    <div style="padding:10px 10px 14px;background:#FFFDF8;box-shadow:0 14px 28px -16px rgba(60,40,20,.5);transform:rotate(-1.5deg);display:flex;flex-direction:column;gap:10px">
+      <sc-if value="{{ noteNoPhoto }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ pickNotePhoto }}" style="aspect-ratio:4/5;width:100%;border:1.5px dashed #BFB4A1;background:#F7F2E9;color:#6E665A;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><span style="font-size:28px;line-height:1">+</span>사진 고르기</button>
+      </sc-if>
+      <sc-if value="{{ noteHasPhoto }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ pickNotePhoto }}" aria-label="다시 고르기" style="aspect-ratio:4/5;width:100%;border:0;padding:0;cursor:pointer;background:{{ notePhoto.bg }}"></button>
+      </sc-if>
+      <input value="{{ noteDraft.message }}" onChange="{{ nMsg }}" placeholder="한 줄 메모 (선택)" style="width:100%;height:40px;padding:0 4px;border:0;background:transparent;font-family:'Nanum Pen Script',cursive;font-size:23px;color:#3A352E;outline:none">
+    </div>
+    <input type="file" accept="image/*" ref="{{ noteFileRef }}" onChange="{{ onNoteFile }}" style="display:none">
+    <div style="font-size:13px;line-height:1.55;color:#9A9182;text-align:center">{{ partnerName }}에게 바로 보여요. 보낸 사진은 사진첩의 ‘주고받은 사진’에 남아요.</div>
+    <sc-if value="{{ hasNoteErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#A4583C;text-align:center">{{ noteErr }}</div></sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showOb }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Onboarding" style="position:absolute;inset:0;z-index:80;background:#F2EDE1;display:flex;flex-direction:column;padding:56px 24px 34px;animation:olaFade .3s">
+  <div style="height:44px;display:flex;align-items:center;justify-content:space-between">
+    <div style="width:44px">
+      <sc-if value="{{ obCanBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ obBack }}" aria-label="뒤로" style="width:44px;height:44px;margin-left:-12px;border:0;background:transparent;color:#2F2B25;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button></sc-if>
+    </div>
+    <sc-if value="{{ obShowDots }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:6px;align-items:center">
+        <sc-for list="{{ obDots }}" as="d" hint-placeholder-count="3"><span style="height:7px;border-radius:9px;transition:width .25s;width:{{ d.w }};background:{{ d.bg }}"></span></sc-for>
+      </div>
+    </sc-if>
+    <div style="width:44px;text-align:right;font-size:12px;color:#9A9182">{{ obStepLbl }}</div>
+  </div>
+
+  <sc-if value="{{ ob1 }}" hint-placeholder-val="{{ true }}">
+  <div style="padding-top:28px;display:flex;flex-direction:column;gap:26px;animation:olaIn .3s ease-out">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:13px;color:#7D9276">우리 공간 만들기</div>
+      <div style="font-family:'Gowun Batang',serif;font-size:29px;line-height:1.35">누구와 함께<br>기록할까요?</div>
+      <div style="font-size:14px;line-height:1.6;color:#6E665A">이 공간에는 두 사람만 들어올 수 있어요.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">내 이름</div>
+      <input value="{{ obDraft.selfName }}" onChange="{{ obSelf }}" placeholder="상대에게 보일 이름" style="width:100%;height:50px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:16px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">함께할 사람</div>
+      <input value="{{ obDraft.partnerName }}" onChange="{{ obPartner }}" placeholder="예: 성은" style="width:100%;height:50px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:16px;color:#2F2B25;outline:none" style-focus="border-color:#7D9276">
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ ob2 }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:28px;display:flex;flex-direction:column;gap:22px;animation:olaIn .3s ease-out">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:13px;color:#7D9276">초대하기</div>
+      <div style="font-family:'Gowun Batang',serif;font-size:29px;line-height:1.35">{{ obPartnerName }}에게<br>초대 링크를 보내세요</div>
+    </div>
+    <div style="position:relative;padding:20px 18px 16px;border-radius:14px;background:#FFFDF8;border:1.5px dashed #CFC5B3;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;color:#9A9182">초대 링크</span>
+        <span style="font:15px ui-monospace,Menlo,monospace;color:#2F2B25;word-break:break-all">{{ obLink }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button onClick="{{ obCopy }}" style="height:44px;border-radius:10px;border:1px solid #D9CFBE;background:transparent;font-size:14px;color:#2F2B25;cursor:pointer">링크 복사</button>
+        <button onClick="{{ obShare }}" style="height:44px;border-radius:10px;border:0;background:#50634A;font-size:14px;color:#FBF8F1;cursor:pointer">공유하기</button>
+      </div>
+    </div>
+    <div style="font-size:13px;line-height:1.6;color:#6E665A">링크는 48시간 동안, 한 사람만 쓸 수 있어요. {{ obPartnerName }}님이 링크를 열고 Google로 로그인하면 바로 연결돼요.</div>
+    <sc-if value="{{ obWaiting }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:10px;padding:14px;border-radius:12px;background:#EAE3D6">
+        <span style="width:8px;height:8px;border-radius:50%;background:#7D9276;animation:olaPulse 1.4s infinite"></span>
+        <span style="flex:1;font-size:14px;color:#4A443B">{{ obPartnerName }}님을 기다리는 중</span>
+        <button onClick="{{ obAccept }}" style="height:32px;padding:0 10px;border-radius:999px;border:1px dashed #9A9182;background:transparent;font-size:12px;color:#6E665A;cursor:pointer">데모: 수락됨</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ obAccepted }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:#E4E9DB;animation:olaFade .3s">
+        <span style="display:flex"><span style="width:32px;height:32px;border-radius:50%;background:#E2C6B2;border:2px solid #E4E9DB;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:13px">{{ obSelfInitial }}</span><span style="width:32px;height:32px;margin-left:-9px;border-radius:50%;background:#C5CDB6;border:2px solid #E4E9DB;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:13px">{{ obPartnerInitial }}</span></span>
+        <span style="font-size:14px;color:#3F5139">{{ obPartnerName }}님과 연결됐어요</span>
+      </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ ob3 }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:28px;display:flex;flex-direction:column;gap:26px;animation:olaIn .3s ease-out">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:13px;color:#7D9276">우리의 날짜</div>
+      <div style="font-family:'Gowun Batang',serif;font-size:29px;line-height:1.35">언제부터<br>함께였나요?</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">사귀기 시작한 날</div>
+      <input type="date" value="{{ obDraft.startDate }}" onChange="{{ obStart }}" style="width:100%;height:50px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:16px;color:#2F2B25;outline:none">
+      <div style="font-size:13px;color:#50634A">{{ obDayPreview }}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;color:#6E665A">처음 만난 날 <span style="color:#9A9182">· 선택</span></div>
+      <input type="date" value="{{ obDraft.metDate }}" onChange="{{ obMet }}" style="width:100%;height:50px;padding:0 14px;border-radius:10px;border:1px solid #E3DACB;background:#FBF8F1;font-size:16px;color:#2F2B25;outline:none">
+      <div style="font-size:12px;color:#9A9182">매년 기념일로 홈에 보여 드릴게요.</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ ob4 }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:40px;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center;animation:olaIn .3s ease-out">
+    <div style="position:relative;width:190px;padding:10px 10px 40px;background:#FFFDF8;box-shadow:0 16px 30px -16px rgba(60,40,20,.5);transform:rotate(-3deg)">
+      <div style="position:absolute;top:-10px;left:50%;width:70px;height:20px;margin-left:-35px;background:rgba(222,208,170,.8);transform:rotate(3deg)"></div>
+      <div style="aspect-ratio:1;background:linear-gradient(160deg,#C5CDB6,#A4B096);display:flex;align-items:center;justify-content:center;gap:0">
+        <span style="width:52px;height:52px;border-radius:50%;background:#E2C6B2;border:3px solid #FFFDF8;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:20px">{{ obSelfInitial }}</span>
+        <span style="width:52px;height:52px;margin-left:-12px;border-radius:50%;background:#F2EDE1;border:3px solid #FFFDF8;display:flex;align-items:center;justify-content:center;font-family:'Gowun Batang',serif;font-size:20px">{{ obPartnerInitial }}</span>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:9px;font-family:'Nanum Pen Script',cursive;font-size:23px;color:#3A352E">{{ obDateDot }} ~</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:'Gowun Batang',serif;font-size:28px">준비됐어요</div>
+      <div style="font-size:14px;line-height:1.65;color:#6E665A;text-wrap:pretty">{{ obSummary }}</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="flex:1"></div>
+  <sc-if value="{{ hasObErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#A4583C;text-align:center;padding-bottom:12px">{{ obErr }}</div></sc-if>
+  <button onClick="{{ obNext }}" style="height:54px;border-radius:12px;border:0;background:#50634A;color:#FBF8F1;font-size:16px;cursor:pointer" style-active="background:#435540">{{ obCta }}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasAdd }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:flex-end">
+  <div onClick="{{ closeAdd }}" style="position:absolute;inset:0;background:rgba(47,43,37,.35);animation:olaFade .2s"></div>
+  <div style="position:relative;background:#FBF8F1;border-radius:22px 22px 0 0;padding:10px 20px 40px;display:flex;flex-direction:column;gap:10px;animation:olaUp .28s cubic-bezier(.2,.8,.2,1)">
+    <div style="width:38px;height:5px;border-radius:9px;background:#D9CFBE;align-self:center;margin-bottom:10px"></div>
+    <button onClick="{{ newMemory }}" style="min-height:72px;padding:14px 16px;border-radius:14px;border:1px solid #E3DACB;background:#FFFDF8;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" style-hover="border-color:#B9C3AC">
+      <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#E4E9DB;display:flex;align-items:center;justify-content:center;color:#50634A">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"></rect><circle cx="12" cy="13" r="3.5"></circle><path d="M8 6l1.5-2h5L16 6"></path></svg>
+      </span>
+      <span style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'Gowun Batang',serif;font-size:17px;color:#2F2B25">추억 남기기</span><span style="font-size:13px;color:#9A9182">사진과 그날의 후기를 기록해요</span></span>
+    </button>
+    <button onClick="{{ newWish }}" style="min-height:72px;padding:14px 16px;border-radius:14px;border:1px solid #E3DACB;background:#FFFDF8;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" style-hover="border-color:#B9C3AC">
+      <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#F1E2D7;display:flex;align-items:center;justify-content:center;color:#A4583C">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v17l-7-4-7 4z"></path></svg>
+      </span>
+      <span style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'Gowun Batang',serif;font-size:17px;color:#2F2B25">하고 싶은 것 담기</span><span style="font-size:13px;color:#9A9182">가고 싶은 곳, 먹고 싶은 것, 함께할 일</span></span>
+    </button>
+    <button onClick="{{ newNote }}" style="min-height:72px;padding:14px 16px;border-radius:14px;border:1px solid #E3DACB;background:#FFFDF8;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" style-hover="border-color:#B9C3AC">
+      <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#EFE8DC;display:flex;align-items:center;justify-content:center;color:#6E665A">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"></path><path d="M21 3l-7 18-4-7-7-4z"></path></svg>
+      </span>
+      <span style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'Gowun Batang',serif;font-size:17px;color:#2F2B25">{{ partnerName }}에게 사진 보내기</span><span style="font-size:13px;color:#9A9182">지금 내 모습, 보여주고 싶은 것 한 장</span></span>
+    </button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasConfirm }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:32px;background:rgba(47,43,37,.38);animation:olaFade .2s">
+  <div style="width:100%;background:#FBF8F1;border-radius:16px;padding:22px 20px 16px;display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'Gowun Batang',serif;font-size:18px">{{ confirm.title }}</div>
+    <div style="font-size:14px;line-height:1.55;color:#6E665A">{{ confirm.body }}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+      <button onClick="{{ closeConfirm }}" style="height:46px;border-radius:10px;border:1px solid #D9CFBE;background:transparent;font-size:15px;color:#2F2B25;cursor:pointer">취소</button>
+      <button onClick="{{ confirmYes }}" style="height:46px;border-radius:10px;border:0;background:#A4583C;font-size:15px;color:#FBF8F1;cursor:pointer">지우기</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:104px;z-index:70;display:flex;justify-content:center;pointer-events:none;animation:olaFade .2s">
+  <div style="padding:11px 18px;border-radius:999px;background:#2F2B25;color:#FBF8F1;font-size:14px">{{ toast }}</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ texture }}" hint-placeholder-val="{{ true }}">
+<svg width="100%" height="100%" style="position:absolute;inset:0;pointer-events:none;z-index:90;mix-blend-mode:multiply;opacity:.55">
+  <filter id="olaGrain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .35  0 0 0 0 .25  0 0 0 .09 0"></feColorMatrix></filter>
+  <rect width="100%" height="100%" filter="url(#olaGrain)"></rect>
+</svg>
+</sc-if>
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tilt&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Scrapbook&quot;},&quot;texture&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Scrapbook&quot;}}">
+const K = 'ola-proto-v1';
+const pad = n => String(n).padStart(2, '0');
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const days = (a, b) => Math.round((a - b) / 864e5);
+const DOW = '일월화수목금토';
+const kLong = s => { const d = parse(s); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${DOW[d.getDay()]}요일`; };
+const kYMD = s => { const d = parse(s); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`; };
+const kMD = d => `${d.getMonth() + 1}월 ${d.getDate()}일`;
+const dot = s => { const d = parse(s); return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`; };
+const won = n => `${Number(n).toLocaleString('ko-KR')}원`;
+const ddLabel = d => { const n = days(d, today()); return n === 0 ? 'D-DAY' : n > 0 ? `D-${n}` : `D+${-n}`; };
+const TONES = { sage: ['#C5CDB6', '#A4B096'], clay: ['#E2C6B2', '#C9A086'], sky: ['#C7D1D4', '#A3B3B8'], butter: ['#EDE0BA', '#D6C18E'], rose: ['#E3C3BE', '#C99D97'], stone: ['#D6CEC1', '#B5AA98'] };
+const CATS = ['음식', '여행', '전시', '일상', '기타'];
+const PRI = ['보통', '하고 싶음', '꼭 하기'];
+const PRI_C = { '보통': ['#EFE8DC', '#6E665A'], '하고 싶음': ['#E4E9DB', '#3F5139'], '꼭 하기': ['#F1E2D7', '#8A4A30'] };
+const ST = { wish: '하고 싶은 일', planned: '계획 중', done: '완료' };
+const P = (tone, label) => ({ tone, label });
+const jong = w => { const c = (w || '').charCodeAt(w.length - 1); return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0; };
+const iga = w => w + (jong(w) ? '이' : '가');
+const stamp = d => `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+const ago = h => stamp(new Date(Date.now() - h * 36e5));
+
+const seed = () => ({
+  couple: { name: '성은 & 나의 작은 기록 보관함', startDate: '2025-03-14', invite: { state: 'accepted', code: '7KQ2-M9XD' } },
+  members: { her: { name: '성은' }, me: { name: '나' } },
+  anniversaries: [
+    { id: 'a1', title: '처음 만난 날', date: '2025-02-08', repeatYearly: true, by: 'her' },
+    { id: 'a2', title: '첫 여행 간 날', date: '2025-05-03', repeatYearly: true, by: 'me' },
+  ],
+  memories: [
+    { id: 'm1', title: '성수동 골목 산책', date: '2026-10-11', place: '성수동', category: '일상', photos: [P('clay', '성수동 골목'), P('butter', '카페 창가'), P('stone', '네 컷 사진')], content: '골목마다 새로 생긴 가게가 많았다. 사진관에서 둘이 찍은 네 컷이 제일 마음에 든다.', wishlistId: 'w7', by: 'her', createdAt: '2026-10-11T22:10:00', updatedAt: '2026-10-12T09:03:00', updatedBy: 'me' },
+    { id: 'm2', title: '한강 피크닉', date: '2026-09-27', place: '반포 한강공원', category: '일상', photos: [P('sage', '돗자리'), P('sky', '노을')], content: '김밥이랑 과일 싸 들고 갔다. 해 질 때까지 누워 있었는데 바람이 딱 좋았다.', wishlistId: 'w6', by: 'me', createdAt: '2026-09-27T21:40:00', updatedAt: '2026-09-27T21:40:00', updatedBy: 'me' },
+    { id: 'm3', title: '전시 보고 온 날', date: '2026-09-06', place: '리움미술관', category: '전시', photos: [P('stone', '전시장'), P('rose', '티켓')], content: '생각보다 오래 머물렀다. 서로 좋아하는 작품이 달라서 이야기할 게 많았다.', wishlistId: null, by: 'her', createdAt: '2026-09-06T20:00:00', updatedAt: '2026-09-06T20:00:00', updatedBy: 'her' },
+    { id: 'm4', title: '강릉 1박 2일', date: '2026-08-15', place: '강릉 안목해변', category: '여행', photos: [P('sky', '아침 바다'), P('butter', '커피거리'), P('sage', '숙소 창밖'), P('clay', '초당 순두부')], content: '아침 바다가 정말 조용했다. 다음엔 겨울 바다도 보러 오자고 약속했다.', wishlistId: null, by: 'me', createdAt: '2026-08-16T23:00:00', updatedAt: '2026-08-17T10:20:00', updatedBy: 'her' },
+    { id: 'm5', title: '비 오는 날 우동', date: '2026-07-20', place: '연남동', category: '음식', photos: [P('butter', '우동')], content: '갑자기 비가 와서 들어간 가게였는데 우리 단골이 될 것 같다.', wishlistId: null, by: 'her', createdAt: '2026-07-20T21:00:00', updatedAt: '2026-07-20T21:00:00', updatedBy: 'her' },
+    { id: 'm6', title: '처음 같이 만든 파스타', date: '2026-06-02', place: '우리 집', category: '일상', photos: [P('rose', '파스타'), P('stone', '식탁')], content: '면이 조금 불었지만 둘이 만든 첫 요리. 다음엔 소스를 더 넉넉히.', wishlistId: null, by: 'me', createdAt: '2026-06-02T22:00:00', updatedAt: '2026-06-02T22:00:00', updatedBy: 'me' },
+  ],
+  notes: [
+    { id: 'n1', by: 'her', photo: P('butter', '점심'), message: '오늘 점심 여기 맛있었어. 다음에 같이 가자', createdAt: ago(2), seenBy: ['her'] },
+    { id: 'n2', by: 'me', photo: P('sky', '퇴근길 하늘'), message: '하늘 봐', createdAt: ago(50), seenBy: ['me', 'her'] },
+    { id: 'n3', by: 'her', photo: P('rose', '새로 산 꽃'), message: '', createdAt: ago(120), seenBy: ['her', 'me'] },
+  ],
+  wishlist: [
+    { id: 'w1', title: '남산 케이블카 타고 야경 보기', category: '일상', place: '남산서울타워', cost: 30000, priority: '꼭 하기', status: 'planned', targetDate: '2026-10-31', memoryId: null, by: 'her', createdAt: '2026-10-02T10:00:00' },
+    { id: 'w2', title: '제주도 가을 여행', category: '여행', place: '제주', cost: 600000, priority: '꼭 하기', status: 'planned', targetDate: '2026-11-21', memoryId: null, by: 'me', createdAt: '2026-09-20T10:00:00' },
+    { id: 'w3', title: '을지로 노포에서 노가리', category: '음식', place: '을지로', cost: 30000, priority: '하고 싶음', status: 'wish', targetDate: '', memoryId: null, by: 'me', createdAt: '2026-10-08T10:00:00' },
+    { id: 'w4', title: '도자기 원데이 클래스', category: '기타', place: '', cost: 80000, priority: '하고 싶음', status: 'wish', targetDate: '', memoryId: null, by: 'her', createdAt: '2026-10-05T10:00:00' },
+    { id: 'w5', title: '국립현대미술관 새 전시', category: '전시', place: '국립현대미술관 서울', cost: null, priority: '보통', status: 'wish', targetDate: '', memoryId: null, by: 'her', createdAt: '2026-09-29T10:00:00' },
+    { id: 'w6', title: '한강 피크닉 가기', category: '일상', place: '반포 한강공원', cost: 20000, priority: '하고 싶음', status: 'done', targetDate: '2026-09-27', memoryId: 'm2', by: 'me', createdAt: '2026-09-01T10:00:00' },
+    { id: 'w7', title: '성수동 사진관에서 네 컷 찍기', category: '일상', place: '성수동', cost: null, priority: '보통', status: 'done', targetDate: '', memoryId: 'm1', by: 'her', createdAt: '2026-09-15T10:00:00' },
+  ],
+});
+
+class Component extends DCLogic {
+  scrollRef = React.createRef();
+  fileRef = React.createRef();
+  state = Object.assign({
+    tab: 'home', detailId: null, photoIdx: 0, memDraft: null, wishDraft: null, addOpen: false, settings: false,
+    confirm: null, toast: '', loginStep: 'start', albumMonth: 'all', albumQuery: '', wishStatus: 'wish', wishCat: 'all',
+    memErr: '', wishErr: '', annDraft: { title: '', date: '', repeat: true },
+    obStep: 0, obDraft: null, obErr: '', noteDraft: null, noteErr: '', albumSeg: 'together', newIds: [],
+  }, this.load());
+
+  load() {
+    try { const s = JSON.parse(localStorage.getItem(K)); if (s && s.data) { if (!s.data.notes) s.data.notes = seed().notes; if (!s.data.couple.invite) s.data.couple.invite = { state: 'accepted', code: '7KQ2-M9XD' }; return s; } } catch (e) {}
+    return { authed: false, viewer: 'me', onboarded: false, data: seed() };
+  }
+  componentDidUpdate(pp, ps) {
+    const s = this.state;
+    if (ps.data !== s.data || ps.authed !== s.authed || ps.viewer !== s.viewer || ps.onboarded !== s.onboarded) {
+      try { localStorage.setItem(K, JSON.stringify({ authed: s.authed, viewer: s.viewer, onboarded: s.onboarded, data: s.data })); } catch (e) {}
+    }
+    if ((ps.tab !== s.tab || ps.albumSeg !== s.albumSeg) && this.scrollRef.current) this.scrollRef.current.scrollTop = 0;
+  }
+  setData(fn) { this.setState(s => ({ data: fn(s.data) })); }
+  flash(msg) { clearTimeout(this._t); this.setState({ toast: msg }); this._t = setTimeout(() => this.setState({ toast: '' }), 2200); }
+  name(by) { return (this.state.data.members[by] || {}).name || ''; }
+  rot(id, i = 0) {
+    if (this.props.tilt === false) return 0;
+    let h = i * 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 997;
+    return ((h % 7) - 3) * 0.8;
+  }
+  photo(p) {
+    if (!p) { const [a, b] = TONES.stone; return { isImg: false, src: '', bg: `linear-gradient(160deg,${a},${b})`, label: '사진 없음', hasLabel: true }; }
+    if (p.src) return { isImg: true, src: '', bg: `#D6CEC1 center/cover no-repeat url("${p.src}")`, label: '', hasLabel: false };
+    const [a, b] = TONES[p.tone] || TONES.stone;
+    return { isImg: false, src: '', bg: `linear-gradient(160deg,${a},${b})`, label: p.label ? `photo · ${p.label}` : '', hasLabel: !!p.label };
+  }
+  memView(m, i) {
+    const d = parse(m.date);
+    return {
+      ...m, cover: this.photo(m.photos[0]), dateDot: dot(m.date), hasMore: m.photos.length > 1, more: `+${m.photos.length - 1}`,
+      placeShort: m.place || m.category, rot: this.rot(m.id, i), tape: i % 3 === 0, open: () => this.setState({ detailId: m.id, photoIdx: 0 }),
+      day: d.getDate(), dow: DOW[d.getDay()], place: m.place || '장소 없음', content: m.content || '후기 없음',
+      thumbs: (m.photos.length ? m.photos : [null]).slice(0, 4).map(p => this.photo(p)),
+    };
+  }
+  sortedMems() { return [...this.state.data.memories].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)); }
+  groupByMonth(list) {
+    const out = [];
+    list.forEach((m, i) => {
+      const k = m.date.slice(0, 7);
+      let g = out[out.length - 1];
+      if (!g || g.key !== k) { const [y, mo] = k.split('-'); g = { key: k, label: `${y}년 ${Number(mo)}월`, items: [] }; out.push(g); }
+      g.items.push(this.memView(m, i));
+    });
+    out.forEach(g => g.count = `${g.items.length}개`);
+    return out;
+  }
+  upcoming() {
+    const { startDate } = this.state.data.couple; const t = today(); const s = parse(startDate);
+    const n = days(t, s) + 1; const L = [];
+    const k = Math.max(100, Math.ceil(n / 100) * 100);
+    for (let i = 0; i < 2; i++) { const m = k + i * 100; L.push({ title: `${m}일`, d: new Date(s.getFullYear(), s.getMonth(), s.getDate() + m - 1) }); }
+    for (let y = 1; y < 80; y++) { const d = new Date(s.getFullYear() + y, s.getMonth(), s.getDate()); if (d >= t) { L.push({ title: `${y}주년`, d }); break; } }
+    this.state.data.anniversaries.forEach(a => {
+      const o = parse(a.date);
+      if (a.repeatYearly) { let d = new Date(t.getFullYear(), o.getMonth(), o.getDate()); if (d < t) d = new Date(t.getFullYear() + 1, o.getMonth(), o.getDate()); L.push({ title: a.title, d }); }
+      else if (o >= t) L.push({ title: a.title, d: o });
+    });
+    return L.sort((a, b) => a.d - b.d).slice(0, 3).map((u, i) => ({
+      title: u.title, date: kMD(u.d), dd: ddLabel(u.d),
+      pillBg: i === 0 ? '#50634A' : 'transparent', pillFg: i === 0 ? '#FBF8F1' : '#50634A', pillBd: i === 0 ? '#50634A' : '#B9C3AC',
+    }));
+  }
+  chip(on) { return { bg: on ? '#50634A' : 'transparent', fg: on ? '#FBF8F1' : '#6E665A', bd: on ? '#50634A' : '#D9CFBE' }; }
+  seg(on) { return { bg: on ? '#FBF8F1' : 'transparent', fg: on ? '#2F2B25' : '#6E665A', sh: on ? '0 1px 3px rgba(60,40,20,.15)' : 'none' }; }
+
+  // flows
+  goTab = tab => this.setState({ tab, detailId: null, settings: false, addOpen: false });
+  newMemory = () => this.setState({ addOpen: false, memErr: '', memDraft: { id: null, title: '', date: iso(today()), place: '', category: '일상', content: '', photos: [], wishlistId: null } });
+  newWish = () => this.setState({ addOpen: false, wishErr: '', wishDraft: { id: null, title: '', category: '음식', place: '', cost: '', priority: '하고 싶음', status: 'wish', targetDate: '' } });
+  editWish = w => this.setState({ wishErr: '', wishDraft: { ...w, cost: w.cost == null ? '' : String(w.cost), targetDate: w.targetDate || '' } });
+  recordFromWish = w => this.setState({ memErr: '', memDraft: { id: null, title: w.title, date: w.targetDate && parse(w.targetDate) <= today() ? w.targetDate : iso(today()), place: w.place || '', category: w.category, content: '', photos: [], wishlistId: w.id } });
+  setMem = patch => this.setState(s => ({ memDraft: { ...s.memDraft, ...patch }, memErr: '' }));
+  setWish = patch => this.setState(s => ({ wishDraft: { ...s.wishDraft, ...patch }, wishErr: '' }));
+  noteFileRef = React.createRef();
+  onFile = e => this.readImg(e, src => this.setState(s => s.memDraft ? { memDraft: { ...s.memDraft, photos: [...s.memDraft.photos, { src }] } } : null));
+  onNoteFile = e => this.readImg(e, src => this.setState(s => s.noteDraft ? { noteDraft: { ...s.noteDraft, photo: { src } }, noteErr: '' } : null));
+  readImg(e, cb) {
+    const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const sc = Math.min(1, 900 / Math.max(img.width, img.height)); const c = document.createElement('canvas');
+        c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        cb(c.toDataURL('image/jpeg', 0.78));
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(f);
+  }
+  login = viewer => {
+    this.setState({ authed: true, viewer, tab: 'home', loginStep: 'start' });
+    if (!this.state.onboarded) this.startOb(viewer, false);
+  };
+  startOb = (viewer, prefill) => {
+    const d = this.state.data; const other = viewer === 'me' ? 'her' : 'me'; const self = d.members[viewer].name;
+    const r = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+    const met = d.anniversaries.find(a => a.title === '처음 만난 날');
+    const inv = d.couple.invite || {};
+    this.setState({ settings: false, obStep: 1, obErr: '', obDraft: prefill
+      ? { selfName: self, partnerName: d.members[other].name, startDate: d.couple.startDate, metDate: met ? met.date : '', invite: inv.state || 'waiting', code: inv.code || `${r()}-${r()}` }
+      : { selfName: self === '나' ? '' : self, partnerName: '', startDate: '', metDate: '', invite: 'waiting', code: `${r()}-${r()}` } });
+  };
+  setOb = patch => this.setState(s => ({ obDraft: { ...s.obDraft, ...patch }, obErr: '' }));
+  obNext = () => {
+    const s = this.state, o = s.obDraft;
+    if (s.obStep === 1 && (!o.selfName.trim() || !o.partnerName.trim())) return this.setState({ obErr: '두 사람의 이름을 모두 적어 주세요.' });
+    if (s.obStep === 3) {
+      if (!o.startDate) return this.setState({ obErr: '사귀기 시작한 날을 골라 주세요.' });
+      if (parse(o.startDate) > today()) return this.setState({ obErr: '오늘 이후 날짜는 고를 수 없어요.' });
+    }
+    if (s.obStep < 4) return this.setState({ obStep: s.obStep + 1, obErr: '' });
+    const v = s.viewer, other = v === 'me' ? 'her' : 'me', self = o.selfName.trim(), partner = o.partnerName.trim();
+    this.setData(d => {
+      let anniversaries = d.anniversaries.filter(a => a.title !== '처음 만난 날');
+      if (o.metDate) anniversaries = [{ id: 'a' + Date.now(), title: '처음 만난 날', date: o.metDate, repeatYearly: true, by: v }, ...anniversaries];
+      return { ...d, anniversaries, members: { ...d.members, [v]: { name: self }, [other]: { name: partner } },
+        couple: { ...d.couple, name: `${partner} & ${self}의 작은 기록 보관함`, startDate: o.startDate, invite: { state: o.invite, code: o.code } } };
+    });
+    this.setState({ onboarded: true, obStep: 0, obDraft: null, tab: 'home' });
+    this.flash('우리 공간이 준비됐어요');
+  };
+  inviteUrl(code) { return `https://ourlittlearchive.app/i/${code}`; }
+  copyInvite = code => { try { navigator.clipboard && navigator.clipboard.writeText(this.inviteUrl(code)).catch(() => {}); } catch (e) {} this.flash('초대 링크를 복사했어요'); };
+  shareInvite = code => { const url = this.inviteUrl(code); if (navigator.share) navigator.share({ title: 'Our Little Archive', text: '우리 둘만의 기록 공간에 초대할게', url }).catch(() => {}); else this.copyInvite(code); };
+  partnerName() { return this.name(this.state.viewer === 'me' ? 'her' : 'me'); }
+  newNote = () => this.setState({ addOpen: false, noteErr: '', noteDraft: { photo: null, message: '' } });
+  saveNote = () => {
+    const d = this.state.noteDraft; if (!d.photo) return this.setState({ noteErr: '보낼 사진을 골라 주세요.' });
+    const v = this.state.viewer;
+    this.setData(data => ({ ...data, notes: [{ id: 'n' + Date.now(), by: v, photo: d.photo, message: d.message.trim(), createdAt: stamp(new Date()), seenBy: [v] }, ...(data.notes || [])] }));
+    this.setState({ noteDraft: null, tab: 'album', albumSeg: 'notes', newIds: [], detailId: null });
+    this.flash(`${this.partnerName()}에게 보냈어요`);
+  };
+  openNotes = () => {
+    const v = this.state.viewer; const ids = (this.state.data.notes || []).filter(n => !n.seenBy.includes(v)).map(n => n.id);
+    this.setState({ tab: 'album', albumSeg: 'notes', newIds: ids, detailId: null, settings: false });
+    if (ids.length) this.setData(d => ({ ...d, notes: d.notes.map(n => ids.includes(n.id) ? { ...n, seenBy: [...n.seenBy, v] } : n) }));
+  };
+  saveMem = () => {
+    const d = this.state.memDraft;
+    if (!d.title.trim()) return this.setState({ memErr: '제목을 적어 주세요.' });
+    if (!d.date) return this.setState({ memErr: '날짜를 골라 주세요.' });
+    const now = new Date().toISOString().slice(0, 19); const id = d.id || 'm' + Date.now(); const v = this.state.viewer;
+    this.setData(data => {
+      const ex = data.memories.find(m => m.id === id);
+      const rec = { id, title: d.title.trim(), date: d.date, place: d.place.trim(), category: d.category, content: d.content.trim(), photos: d.photos, wishlistId: d.wishlistId || null, by: ex ? ex.by : v, createdAt: ex ? ex.createdAt : now, updatedAt: now, updatedBy: v };
+      const memories = ex ? data.memories.map(m => m.id === id ? rec : m) : [rec, ...data.memories];
+      const wishlist = rec.wishlistId ? data.wishlist.map(w => w.id === rec.wishlistId ? { ...w, status: 'done', memoryId: id } : w) : data.wishlist;
+      return { ...data, memories, wishlist };
+    });
+    this.setState({ memDraft: null, detailId: id, photoIdx: 0 });
+    this.flash(d.id ? '수정했어요' : d.wishlistId ? '완료! 추억으로 남겼어요' : '추억이 저장됐어요');
+  };
+  saveWish = () => {
+    const d = this.state.wishDraft;
+    if (!d.title.trim()) return this.setState({ wishErr: '무엇을 하고 싶은지 적어 주세요.' });
+    const now = new Date().toISOString().slice(0, 19); const id = d.id || 'w' + Date.now();
+    const cost = d.cost === '' || d.cost == null ? null : Number(d.cost);
+    this.setData(data => {
+      const ex = data.wishlist.find(w => w.id === id);
+      const rec = { ...(ex || { memoryId: null, by: this.state.viewer, createdAt: now }), id, title: d.title.trim(), category: d.category, place: d.place.trim(), cost, priority: d.priority, status: d.status, targetDate: d.targetDate || '', updatedAt: now };
+      return { ...data, wishlist: ex ? data.wishlist.map(w => w.id === id ? rec : w) : [rec, ...data.wishlist] };
+    });
+    this.setState({ wishDraft: null, wishStatus: d.status, wishCat: 'all', tab: this.state.tab === 'home' && !d.id ? 'wish' : this.state.tab });
+    this.flash(d.id ? '수정했어요' : '하고 싶은 것에 담았어요');
+  };
+  advance = w => {
+    if (w.status === 'wish') { this.setData(data => ({ ...data, wishlist: data.wishlist.map(x => x.id === w.id ? { ...x, status: 'planned' } : x) })); this.flash('계획 중으로 옮겼어요'); }
+    else if (w.status === 'planned') this.recordFromWish(w);
+    else if (w.memoryId && this.state.data.memories.some(m => m.id === w.memoryId)) this.setState({ detailId: w.memoryId, photoIdx: 0 });
+    else this.recordFromWish(w);
+  };
+  askDeleteMemory = () => {
+    const m = this.state.data.memories.find(x => x.id === this.state.detailId); if (!m) return;
+    this.setState({ confirm: { title: '이 추억을 지울까요?', body: m.photos.length ? `연결된 사진 ${m.photos.length}장도 함께 지워져요. 되돌릴 수 없어요.` : '되돌릴 수 없어요.', run: () => {
+      this.setData(data => ({ ...data, memories: data.memories.filter(x => x.id !== m.id), wishlist: data.wishlist.map(w => w.memoryId === m.id ? { ...w, memoryId: null } : w) }));
+      this.setState({ detailId: null }); this.flash('추억을 지웠어요');
+    } } });
+  };
+  askDeleteWish = () => {
+    const d = this.state.wishDraft;
+    this.setState({ confirm: { title: '이 항목을 지울까요?', body: `‘${d.title}’을(를) 목록에서 지워요. 이미 남긴 추억은 그대로 있어요.`, run: () => {
+      this.setData(data => ({ ...data, wishlist: data.wishlist.filter(w => w.id !== d.id), memories: data.memories.map(m => m.wishlistId === d.id ? { ...m, wishlistId: null } : m) }));
+      this.setState({ wishDraft: null }); this.flash('지웠어요');
+    } } });
+  };
+
+  renderVals() {
+    const s = this.state; const { data } = s; const v = s.viewer;
+    const t = today(); const start = parse(data.couple.startDate);
+    const mems = this.sortedMems();
+    const wl = data.wishlist;
+    const tc = k => s.tab === k ? '#50634A' : '#9A9182';
+
+    // album
+    const q = s.albumQuery.trim().toLowerCase();
+    const months = [...new Set(mems.map(m => m.date.slice(0, 7)))];
+    const albumList = mems.filter(m => (s.albumMonth === 'all' || m.date.startsWith(s.albumMonth)) && (!q || [m.title, m.place, m.content].join(' ').toLowerCase().includes(q)));
+    const photoTotal = mems.reduce((a, m) => a + m.photos.length, 0);
+
+    // wishlist
+    const pr = w => PRI.indexOf(w.priority);
+    const wishItems = wl.filter(w => w.status === s.wishStatus && (s.wishCat === 'all' || w.category === s.wishCat))
+      .sort((a, b) => s.wishStatus === 'planned' ? (a.targetDate || '9').localeCompare(b.targetDate || '9') : pr(b) - pr(a) || b.createdAt.localeCompare(a.createdAt))
+      .map(w => {
+        const meta = [w.place, w.cost != null ? won(w.cost) : '', w.targetDate ? `${kMD(parse(w.targetDate))} 예정` : ''].filter(Boolean).join(' · ');
+        const lab = w.status === 'wish' ? '계획 세우기' : w.status === 'planned' ? '완료하고 기록하기' : (w.memoryId ? '추억 보기' : '기록 남기기');
+        const strong = w.status === 'planned';
+        const [pb, pf] = PRI_C[w.priority] || PRI_C['보통'];
+        return { ...w, meta, hasMeta: !!meta, byLabel: `${this.name(w.by)} 담음 · ${kMD(new Date(w.createdAt))}`, priBg: pb, priFg: pf,
+          actionLabel: lab, action: () => this.advance(w), edit: () => this.editWish(w),
+          actBg: strong ? '#50634A' : 'transparent', actFg: strong ? '#FBF8F1' : '#50634A', actBd: strong ? '#50634A' : '#B9C3AC' };
+      });
+
+    const next = wl.filter(w => w.status !== 'done').sort((a, b) => (a.status === 'planned' ? 0 : 1) - (b.status === 'planned' ? 0 : 1) || (a.targetDate || '9').localeCompare(b.targetDate || '9') || pr(b) - pr(a)).slice(0, 3)
+      .map(w => ({ title: w.title, sub: [ST[w.status], w.category, w.place].filter(Boolean).join(' · '), dot: w.status === 'planned' ? '#7D9276' : '#D9CFBE', hasDd: !!w.targetDate, dd: w.targetDate ? ddLabel(parse(w.targetDate)) : '', edit: () => this.editWish(w) }));
+
+    // detail
+    let detail = null;
+    const dm = s.detailId && data.memories.find(m => m.id === s.detailId);
+    if (dm) {
+      const idx = Math.min(s.photoIdx, Math.max(0, dm.photos.length - 1));
+      const wish = dm.wishlistId && wl.find(w => w.id === dm.wishlistId);
+      const up = new Date(dm.updatedAt);
+      detail = { ...dm, photo: this.photo(dm.photos[idx]), multi: dm.photos.length > 1, counter: `${idx + 1} / ${dm.photos.length}`,
+        thumbs: dm.photos.map((p, i) => ({ ...this.photo(p), bd: i === idx ? '#50634A' : 'transparent', pick: () => this.setState({ photoIdx: i }) })),
+        dateDot: dot(dm.date), dateLong: kLong(dm.date), hasPlace: !!dm.place, content: dm.content || '아직 후기가 없어요.',
+        hasWish: !!wish, wishTitle: wish ? wish.title : '', authorLine: `${this.name(dm.by)} 작성`,
+        updatedLine: `마지막 수정 ${kMD(up)} ${pad(up.getHours())}:${pad(up.getMinutes())} · ${this.name(dm.updatedBy || dm.by)}` };
+    }
+
+    const md = s.memDraft, wd = s.wishDraft;
+    const memWish = md && md.wishlistId && wl.find(w => w.id === md.wishlistId);
+    const her = data.members.her.name || '성은', me = data.members.me.name || '나';
+    const other = v === 'me' ? 'her' : 'me'; const partner = this.name(other) || '상대';
+    const notesAll = [...(data.notes || [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const unread = notesAll.filter(n => n.by !== v && !n.seenBy.includes(v));
+    const timeLbl = c => { const d = new Date(c); const dd = days(t, new Date(d.getFullYear(), d.getMonth(), d.getDate())); const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`; return dd === 0 ? `오늘 ${hm}` : dd === 1 ? `어제 ${hm}` : kMD(d); };
+    const o = s.obDraft || {}; const obN = o.startDate ? days(t, parse(o.startDate)) + 1 : 0; const obP = (o.partnerName || '').trim() || '상대';
+    const inv = data.couple.invite || { state: 'accepted', code: '' };
+
+    return {
+      showLogin: !s.authed, authed: s.authed, texture: this.props.texture !== false,
+      loginStart: s.loginStep === 'start', loginChoose: s.loginStep === 'choose', loginDenied: s.loginStep === 'denied',
+      googleStart: () => this.setState({ loginStep: 'choose' }),
+      chooseHer: () => this.login('her'), chooseMe: () => this.login('me'),
+      chooseOther: () => this.setState({ loginStep: 'denied' }), backLogin: () => this.setState({ loginStep: 'choose' }),
+      herName: her, meName: me, herInitial: her.slice(0, 1), meInitial: me.slice(0, 1), coupleName: data.couple.name,
+      scrollRef: this.scrollRef, fileRef: this.fileRef,
+      isHome: s.tab === 'home', isAlbum: s.tab === 'album', isWish: s.tab === 'wish', isTimeline: s.tab === 'timeline',
+      tabC: { home: tc('home'), album: tc('album'), wish: tc('wish'), timeline: tc('timeline') },
+      goHome: () => this.goTab('home'), goAlbum: () => this.goTab('album'), goWish: () => this.goTab('wish'), goTimeline: () => this.goTab('timeline'),
+      openAdd: () => this.setState({ addOpen: true }), closeAdd: () => this.setState({ addOpen: false }), hasAdd: s.addOpen,
+      newMemory: this.newMemory, newWish: this.newWish,
+      // home
+      dayCount: Math.max(0, days(t, start) + 1).toLocaleString('ko-KR'), startLong: kYMD(data.couple.startDate), upcoming: this.upcoming(),
+      recent: mems.slice(0, 4).map((m, i) => this.memView(m, i)), nextPlans: next, noPlans: next.length === 0,
+      // album
+      albumQuery: s.albumQuery, setAlbumQuery: e => this.setState({ albumQuery: e.target.value }),
+      albumCount: s.albumSeg === 'notes' ? `${partner}${jong(partner) ? '과' : '와'} 주고받은 사진 ${notesAll.length}장` : `${mems.length}개의 추억 · 사진 ${photoTotal}장`,
+      monthChips: [{ k: 'all', label: '전체' }, ...months.map(k => { const [y, m] = k.split('-'); return { k, label: Number(y) === t.getFullYear() ? `${Number(m)}월` : `${y.slice(2)}년 ${Number(m)}월` }; })]
+        .map(c => ({ ...c, ...this.chip(s.albumMonth === c.k), pick: () => this.setState({ albumMonth: c.k }) })),
+      albumGroups: this.groupByMonth(albumList), albumEmpty: albumList.length === 0,
+      // wish
+      statusTabs: Object.keys(ST).map(k => ({ label: ST[k], count: wl.filter(w => w.status === k).length, ...this.seg(s.wishStatus === k), pick: () => this.setState({ wishStatus: k }) })),
+      catChips: ['all', ...CATS].map(c => ({ label: c === 'all' ? '전체' : c, ...this.chip(s.wishCat === c), pick: () => this.setState({ wishCat: c }) })),
+      wishItems, wishEmpty: wishItems.length === 0,
+      // timeline
+      tlGroups: this.groupByMonth(mems), timelineSub: mems.length ? `${mems.length}개의 기록 · ${kYMD(mems[mems.length - 1].date)}부터` : '아직 기록이 없어요',
+      // detail
+      hasDetail: !!detail, detail: detail || {}, closeDetail: () => this.setState({ detailId: null }),
+      editDetail: () => this.setState({ memErr: '', memDraft: { ...dm, place: dm.place || '', content: dm.content || '' } }), askDeleteMemory: this.askDeleteMemory,
+      // memory form
+      hasMemForm: !!md, memDraft: md || {}, memFormTitle: md && md.id ? '추억 수정' : '추억 남기기',
+      memFromWish: !!memWish && !(md && md.id), memWishTitle: memWish ? memWish.title : '',
+      memPhotos: md ? md.photos.map((p, i) => ({ ...this.photo(p), remove: () => this.setMem({ photos: md.photos.filter((_, j) => j !== i) }) })) : [],
+      memCats: CATS.map(c => ({ label: c, ...this.chip(md && md.category === c), pick: () => this.setMem({ category: c }) })),
+      mTitle: e => this.setMem({ title: e.target.value }), mDate: e => this.setMem({ date: e.target.value }), mPlace: e => this.setMem({ place: e.target.value }), mContent: e => this.setMem({ content: e.target.value }),
+      pickPhoto: () => this.fileRef.current && this.fileRef.current.click(), onFile: this.onFile,
+      saveMem: this.saveMem, cancelMem: () => this.setState({ memDraft: null }), hasMemErr: !!s.memErr, memErr: s.memErr,
+      // wish form
+      hasWishForm: !!wd, wishDraft: wd || {}, wishFormTitle: wd && wd.id ? '하고 싶은 것 수정' : '하고 싶은 것 담기', wishEditing: !!(wd && wd.id),
+      wishCats: CATS.map(c => ({ label: c, ...this.chip(wd && wd.category === c), pick: () => this.setWish({ category: c }) })),
+      wishPris: PRI.map(p => ({ label: p, ...this.seg(wd && wd.priority === p), pick: () => this.setWish({ priority: p }) })),
+      wishStats: ['wish', 'planned'].map(k => ({ label: ST[k], ...this.seg(wd && wd.status === k), pick: () => this.setWish({ status: k }) })),
+      wTitle: e => this.setWish({ title: e.target.value }), wPlace: e => this.setWish({ place: e.target.value }), wCost: e => this.setWish({ cost: e.target.value }), wDate: e => this.setWish({ targetDate: e.target.value }),
+      saveWish: this.saveWish, cancelWish: () => this.setState({ wishDraft: null }), hasWishErr: !!s.wishErr, wishErr: s.wishErr, askDeleteWish: this.askDeleteWish,
+      // settings
+      hasSettings: s.settings, openSettings: () => this.setState({ settings: true }), closeSettings: () => this.setState({ settings: false }),
+      startDate: data.couple.startDate,
+      setCoupleName: e => { const name = e.target.value; this.setData(d => ({ ...d, couple: { ...d.couple, name } })); },
+      setStart: e => { const sd = e.target.value; if (sd) this.setData(d => ({ ...d, couple: { ...d.couple, startDate: sd } })); },
+      setHerName: e => { const n = e.target.value; this.setData(d => ({ ...d, members: { ...d.members, her: { name: n } } })); },
+      setMeName: e => { const n = e.target.value; this.setData(d => ({ ...d, members: { ...d.members, me: { name: n } } })); },
+      annList: [...data.anniversaries].sort((a, b) => a.date.slice(5).localeCompare(b.date.slice(5))).map(a => ({ title: a.title, sub: `${a.repeatYearly ? `매년 ${kMD(parse(a.date))}` : kYMD(a.date)} · ${this.name(a.by)} 추가`, remove: () => this.setData(d => ({ ...d, anniversaries: d.anniversaries.filter(x => x.id !== a.id) })) })),
+      annDraft: s.annDraft, annRepeat: this.chip(s.annDraft.repeat),
+      setAnnTitle: e => this.setState({ annDraft: { ...s.annDraft, title: e.target.value } }), setAnnDate: e => this.setState({ annDraft: { ...s.annDraft, date: e.target.value } }),
+      toggleAnnRepeat: () => this.setState({ annDraft: { ...s.annDraft, repeat: !s.annDraft.repeat } }),
+      addAnn: () => { const a = s.annDraft; if (!a.title.trim() || !a.date) return this.flash('이름과 날짜를 적어 주세요'); this.setData(d => ({ ...d, anniversaries: [...d.anniversaries, { id: 'a' + Date.now(), title: a.title.trim(), date: a.date, repeatYearly: a.repeat, by: v }] })); this.setState({ annDraft: { title: '', date: '', repeat: true } }); this.flash('기념일을 추가했어요'); },
+      viewerSeg: { her: this.seg(v === 'her'), me: this.seg(v === 'me') },
+      viewHer: () => { this.setState({ viewer: 'her' }); this.flash(`${her} 계정으로 보고 있어요`); },
+      viewMe: () => { this.setState({ viewer: 'me' }); this.flash(`${me} 계정으로 보고 있어요`); },
+      logout: () => this.setState({ authed: false, settings: false, detailId: null, loginStep: 'start', tab: 'home' }),
+      partnerName: partner,
+      hasUnread: unread.length > 0, openNotes: this.openNotes, newNote: this.newNote,
+      unread: unread[0] ? { photo: this.photo(unread[0].photo), title: `${iga(partner)} 사진을 보냈어요`, sub: unread.length > 1 ? `새 사진 ${unread.length}장 · ${timeLbl(unread[0].createdAt)}` : (unread[0].message || timeLbl(unread[0].createdAt)) } : {},
+      albumTogether: s.albumSeg === 'together', albumNotes: s.albumSeg === 'notes',
+      albumSegs: [['together', '함께한 순간'], ['notes', '주고받은 사진']].map(([k, label]) => ({ label, ...this.seg(s.albumSeg === k), pick: k === 'notes' ? this.openNotes : () => this.setState({ albumSeg: 'together' }), hasBadge: k === 'notes' && unread.length > 0, badge: String(unread.length) })),
+      notes: notesAll.map((n, i) => { const mine = n.by === v; const seen = mine && n.seenBy.includes(other); return { id: n.id, message: n.message, photo: this.photo(n.photo), align: mine ? 'flex-end' : 'flex-start', from: this.name(n.by), to: this.name(n.by === 'me' ? 'her' : 'me'), time: timeLbl(n.createdAt), isNew: s.newIds.includes(n.id), hasMsg: !!n.message, rot: this.rot(n.id, i), avBg: n.by === 'her' ? '#C5CDB6' : '#E2C6B2', initial: this.name(n.by).slice(0, 1), hasSeen: seen, seenLbl: '봤어요' }; }),
+      notesEmpty: notesAll.length === 0,
+      hasNoteForm: !!s.noteDraft, noteDraft: s.noteDraft || {}, noteHasPhoto: !!(s.noteDraft && s.noteDraft.photo), noteNoPhoto: !(s.noteDraft && s.noteDraft.photo),
+      notePhoto: s.noteDraft && s.noteDraft.photo ? this.photo(s.noteDraft.photo) : {},
+      noteFileRef: this.noteFileRef, onNoteFile: this.onNoteFile, pickNotePhoto: () => this.noteFileRef.current && this.noteFileRef.current.click(),
+      nMsg: e => { const m = e.target.value; this.setState(st => ({ noteDraft: { ...st.noteDraft, message: m } })); },
+      saveNote: this.saveNote, cancelNote: () => this.setState({ noteDraft: null }), hasNoteErr: !!s.noteErr, noteErr: s.noteErr,
+      showOb: s.authed && s.obStep > 0, ob1: s.obStep === 1, ob2: s.obStep === 2, ob3: s.obStep === 3, ob4: s.obStep === 4,
+      obDraft: o, obCanBack: s.obStep > 1 && s.obStep < 4, obBack: () => this.setState({ obStep: s.obStep - 1, obErr: '' }),
+      obShowDots: s.obStep < 4, obStepLbl: s.obStep < 4 ? `${s.obStep} / 3` : '',
+      obDots: [1, 2, 3].map(k => ({ w: k === s.obStep ? '22px' : '7px', bg: k <= s.obStep ? '#50634A' : '#D9CFBE' })),
+      obSelf: e => this.setOb({ selfName: e.target.value }), obPartner: e => this.setOb({ partnerName: e.target.value }),
+      obStart: e => this.setOb({ startDate: e.target.value }), obMet: e => this.setOb({ metDate: e.target.value }),
+      obPartnerName: obP, obLink: `ourlittlearchive.app/i/${o.code || ''}`,
+      obWaiting: o.invite !== 'accepted', obAccepted: o.invite === 'accepted', obAccept: () => this.setOb({ invite: 'accepted' }),
+      obCopy: () => this.copyInvite(o.code), obShare: () => this.shareInvite(o.code),
+      obSelfInitial: ((o.selfName || '').trim() || '나').slice(0, 1), obPartnerInitial: obP.slice(0, 1),
+      obDayPreview: obN > 0 ? `오늘이 함께한 지 ${obN.toLocaleString('ko-KR')}일째예요` : '이 날을 1일로 세요',
+      obDateDot: o.startDate ? dot(o.startDate) : '',
+      obSummary: o.startDate ? `${kYMD(o.startDate)}부터 오늘까지 ${obN.toLocaleString('ko-KR')}일. ${o.invite === 'accepted' ? '' : `${obP}님이 초대를 수락하면 같은 기록을 함께 보게 돼요. `}이제 첫 페이지를 채워 볼까요?` : '',
+      obCta: s.obStep === 2 ? (o.invite === 'accepted' ? '다음' : '보냈어요, 다음으로') : s.obStep === 4 ? '기록 시작하기' : '다음',
+      obNext: this.obNext, hasObErr: !!s.obErr, obErr: s.obErr,
+      inviteLabel: inv.state === 'accepted' ? `${partner}${jong(partner) ? '과' : '와'} 연결됨` : `${partner}님의 수락을 기다리는 중`,
+      inviteDot: inv.state === 'accepted' ? '#7D9276' : '#C9A086', inviteWaiting: inv.state !== 'accepted',
+      inviteResend: () => this.copyInvite(inv.code), replayOb: () => this.startOb(v, true),
+      // confirm / toast
+      hasConfirm: !!s.confirm, confirm: s.confirm || {}, closeConfirm: () => this.setState({ confirm: null }),
+      confirmYes: () => { const c = s.confirm; this.setState({ confirm: null }); c && c.run(); },
+      hasToast: !!s.toast, toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

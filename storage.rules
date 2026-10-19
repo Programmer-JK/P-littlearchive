@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 커플 멤버 여부 확인 (Firestore 조회)
+    function isMember(coupleId) {
+      return request.auth != null
+        && request.auth.uid in firestore.get(
+             /databases/(default)/documents/couples/$(coupleId)
+           ).data.memberUids;
+    }
+
+    // 이미지 파일만, 10MB 이하
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*')
+        && request.resource.size <= 10 * 1024 * 1024;
+    }
+
+    // 추억 사진: couples/{coupleId}/memories/{memoryId}/{fileName}
+    match /couples/{coupleId}/memories/{memoryId}/{fileName} {
+      allow read: if isMember(coupleId);
+      allow create: if isMember(coupleId) && isValidImage();
+      allow delete: if isMember(coupleId);
+      allow update: if false;
+    }
+
+    // 주고받은 사진: couples/{coupleId}/notes/{fileName}
+    match /couples/{coupleId}/notes/{fileName} {
+      allow read: if isMember(coupleId);
+      allow create: if isMember(coupleId) && isValidImage();
+      allow delete: if false;
+      allow update: if false;
+    }
+  }
+}

@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ── Colors ── */
+  --color-paper: #F2EDE1;
+  --color-paper-2: #FBF8F1;
+  --color-polaroid: #FFFDF8;
+  --color-ink: #2F2B25;
+  --color-ink-hand: #3A352E;
+  --color-ink-2: #6E665A;
+  --color-ink-3: #9A9182;
+  --color-line: #E3DACB;
+  --color-line-soft: #EAE2D4;
+  --color-line-faint: #EFE8DC;
+  --color-chip-off-bd: #D9CFBE;
+  --color-sage: #7D9276;
+  --color-sage-deep: #50634A;
+  --color-sage-tint: #E4E9DB;
+  --color-sage-line: #B9C3AC;
+  --color-clay: #C98B6B;
+  --color-clay-deep: #A4583C;
+  --color-clay-tint: #F1E2D7;
+  --color-seg-track: #EAE3D6;
+  --color-avatar-her: #C5CDB6;
+  --color-avatar-me: #E2C6B2;
+
+  /* ── Fonts ── */
+  --font-display: 'Instrument Serif', serif;
+  --font-heading: 'Gowun Batang', serif;
+  --font-body: 'Gowun Dodum', sans-serif;
+  --font-hand: 'Nanum Pen Script', cursive;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  /* ── Border radius ── */
+  --radius-card: 12px;
+  --radius-input: 10px;
+  --radius-dday: 6px;
+  --radius-pill: 999px;
+  --radius-sheet: 22px;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 1px 2px rgba(60,40,20,.06), 0 14px 28px -18px rgba(60,40,20,.35);
+  --shadow-polaroid: 0 10px 20px -12px rgba(60,40,20,.42);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes olaUp {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+@keyframes olaIn {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes olaFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes olaPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.animate-ola-up {
+  animation: olaUp 0.32s cubic-bezier(.2,.8,.2,1);
+}
+
+.animate-ola-in {
+  animation: olaIn 0.28s ease-out;
+}
+
+.animate-ola-fade {
+  animation: olaFade 0.2s;
+}
+
+.animate-ola-pulse {
+  animation: olaPulse 1.4s infinite;
+}
+
+/* ── Lined paper background ── */
+.lined-paper {
+  background-color: var(--color-paper-2);
+  background-image: repeating-linear-gradient(
+    transparent 0 29px,
+    #ECE4D6 29px 30px
+  );
+  background-attachment: local;
+  line-height: 30px;
+}
+
+/* ── Tab bar safe area ── */
+.pb-tabbar {
+  padding-bottom: 104px;
 }
