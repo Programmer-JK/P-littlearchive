@@ -550,8 +550,13 @@ function NoteCard({
       >
         <div
           className="relative w-full overflow-hidden"
-          style={{ aspectRatio: "4/5", background: bg }}
-        />
+          style={{ aspectRatio: "4/5", background: note.thumbUrl ? undefined : bg }}
+        >
+          {note.thumbUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={note.thumbUrl} alt="" className="w-full h-full object-cover" />
+          )}
+        </div>
         {note.message && (
           <div className="font-hand text-[21px] leading-[1.15] text-ink-hand px-1">
             {note.message}

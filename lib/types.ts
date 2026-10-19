@@ -48,6 +48,8 @@ export interface Photo {
   id?: string;
   storagePath: string;
   thumbPath: string;
+  photoUrl: string;
+  thumbUrl: string;
   caption: string;
   sortOrder: number;
   uploadedBy: string;
@@ -87,6 +89,8 @@ export interface Note {
   to: string;
   storagePath: string;
   thumbPath: string;
+  photoUrl: string;
+  thumbUrl: string;
   message: string;
   seenAt: Timestamp | null;
   createdAt: Timestamp;

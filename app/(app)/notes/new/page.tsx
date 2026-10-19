@@ -10,7 +10,7 @@ import {
   collection,
   serverTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/lib/auth-context";
 import { db, storage } from "@/lib/firebase";
 import { resizeImage } from "@/lib/image-utils";
@@ -60,22 +60,24 @@ export default function NewNotePage() {
       // Upload full
       const fullBlob = await resizeImage(photoFile, 1600);
       const storagePath = `couples/${coupleId}/notes/${noteId}.jpg`;
-      await uploadBytes(ref(storage, storagePath), fullBlob, {
-        contentType: "image/jpeg",
-      });
+      const fullRef = ref(storage, storagePath);
+      await uploadBytes(fullRef, fullBlob, { contentType: "image/jpeg" });
+      const photoUrl = await getDownloadURL(fullRef);
 
       // Upload thumb
       const thumbBlob = await resizeImage(photoFile, 400);
       const thumbPath = `couples/${coupleId}/notes/${noteId}_thumb.jpg`;
-      await uploadBytes(ref(storage, thumbPath), thumbBlob, {
-        contentType: "image/jpeg",
-      });
+      const thumbRef = ref(storage, thumbPath);
+      await uploadBytes(thumbRef, thumbBlob, { contentType: "image/jpeg" });
+      const thumbUrl = await getDownloadURL(thumbRef);
 
       await setDoc(doc(db, "couples", coupleId, "notes", noteId), {
         from: myUid,
         to: partnerUid,
         storagePath,
         thumbPath,
+        photoUrl,
+        thumbUrl,
         message: message.trim(),
         seenAt: null,
         createdAt: serverTimestamp(),

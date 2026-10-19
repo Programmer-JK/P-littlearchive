@@ -102,6 +102,8 @@ export default function NewMemoryPage() {
       const uploadedPhotos: Array<{
         storagePath: string;
         thumbPath: string;
+        photoUrl: string;
+        thumbUrl: string;
         sortOrder: number;
       }> = [];
 
@@ -112,19 +114,19 @@ export default function NewMemoryPage() {
         // Full-size (max 1600px)
         const fullBlob = await resizeImage(file, 1600);
         const fullPath = `couples/${coupleId}/memories/${memoryId}/${photoId}.jpg`;
-        await uploadBytes(ref(storage, fullPath), fullBlob, {
-          contentType: "image/jpeg",
-        });
+        const fullRef = ref(storage, fullPath);
+        await uploadBytes(fullRef, fullBlob, { contentType: "image/jpeg" });
+        const photoUrl = await getDownloadURL(fullRef);
 
         // Thumbnail (max 400px)
         const thumbBlob = await resizeImage(file, 400);
         const thumbPath = `couples/${coupleId}/memories/${memoryId}/${photoId}_thumb.jpg`;
-        await uploadBytes(ref(storage, thumbPath), thumbBlob, {
-          contentType: "image/jpeg",
-        });
+        const thumbRef = ref(storage, thumbPath);
+        await uploadBytes(thumbRef, thumbBlob, { contentType: "image/jpeg" });
+        const thumbUrl = await getDownloadURL(thumbRef);
 
         if (i === 0) coverPath = fullPath;
-        uploadedPhotos.push({ storagePath: fullPath, thumbPath, sortOrder: i });
+        uploadedPhotos.push({ storagePath: fullPath, thumbPath, photoUrl, thumbUrl, sortOrder: i });
       }
 
       const batch = writeBatch(db);

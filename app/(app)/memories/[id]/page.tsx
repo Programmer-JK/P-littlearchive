@@ -177,13 +177,13 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
             className="relative overflow-hidden"
             style={{
               aspectRatio: "4/5",
-              background: currentPhoto?.thumbPath ? undefined : coverBg,
+              background: currentPhoto?.thumbUrl ? undefined : coverBg,
             }}
           >
-            {currentPhoto?.thumbPath && (
+            {currentPhoto?.thumbUrl && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={currentPhoto.thumbPath}
+                src={currentPhoto.thumbUrl}
                 alt={memory.title}
                 className="w-full h-full object-cover"
               />
@@ -216,10 +216,10 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
                 borderColor: i === currentPhotoIdx ? "#50634A" : "transparent",
               }}
             >
-              {p.thumbPath && (
+              {p.thumbUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={p.thumbPath}
+                  src={p.thumbUrl}
                   alt=""
                   className="w-full h-full object-cover"
                 />
