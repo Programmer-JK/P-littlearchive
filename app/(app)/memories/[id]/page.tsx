@@ -87,12 +87,14 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
         await deleteDoc(d.ref);
       }
 
-      // Unlink wishlist
+      // Unlink wishlist (non-critical — don't fail deletion if this errors)
       if (memory?.wishlistId) {
-        await updateDoc(
-          doc(db, "couples", coupleId, "wishlist", memory.wishlistId),
-          { memoryId: null, updatedAt: serverTimestamp() }
-        );
+        try {
+          await updateDoc(
+            doc(db, "couples", coupleId, "wishlist", memory.wishlistId),
+            { memoryId: null, updatedAt: serverTimestamp() }
+          );
+        } catch {}
       }
 
       // Delete memory doc
@@ -300,6 +302,7 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
         <ConfirmModal
           title="이 추억을 지울까요?"
           body={`연결된 사진 ${photos.length}장도 함께 지워져요. 되돌릴 수 없어요.`}
+          confirmLabel="삭제"
           onConfirm={handleDelete}
           onCancel={() => setShowConfirm(false)}
         />

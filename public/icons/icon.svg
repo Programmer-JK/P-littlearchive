@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#F2EDE1"/>
+  <text
+    x="256"
+    y="300"
+    font-family="Georgia, serif"
+    font-size="180"
+    font-style="italic"
+    font-weight="400"
+    text-anchor="middle"
+    fill="#2F2B25"
+    letter-spacing="-4"
+  >OLA</text>
+  <text
+    x="256"
+    y="370"
+    font-family="Georgia, serif"
+    font-size="36"
+    text-anchor="middle"
+    fill="#9A9182"
+    letter-spacing="2"
+  >archive</text>
+</svg>

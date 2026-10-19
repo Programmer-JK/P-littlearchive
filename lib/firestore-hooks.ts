@@ -19,6 +19,7 @@ import type {
   Note,
   Photo,
   Song,
+  Rule,
 } from "./types";
 
 // ── Memories ─────────────────────────────────────────────────────────────────
@@ -161,13 +162,13 @@ export function useUnreadNotes(coupleId: string | null, myUid: string | null) {
 
   useEffect(() => {
     if (!coupleId || !myUid) return;
+    // composite index 없이도 동작하도록 to만 필터링 후 JS에서 seenAt 검사
     const q = query(
       collection(db, "couples", coupleId, "notes"),
-      where("to", "==", myUid),
-      where("seenAt", "==", null)
+      where("to", "==", myUid)
     );
     const unsub = onSnapshot(q, (snap) => {
-      setCount(snap.size);
+      setCount(snap.docs.filter((d) => d.data().seenAt === null).length);
     });
     return unsub;
   }, [coupleId, myUid]);
@@ -204,14 +205,35 @@ export function useUnreadSongs(coupleId: string | null, myUid: string | null) {
     if (!coupleId || !myUid) return;
     const q = query(
       collection(db, "couples", coupleId, "songs"),
-      where("to", "==", myUid),
-      where("seenAt", "==", null)
+      where("to", "==", myUid)
     );
     const unsub = onSnapshot(q, (snap) => {
-      setCount(snap.size);
+      setCount(snap.docs.filter((d) => d.data().seenAt === null).length);
     });
     return unsub;
   }, [coupleId, myUid]);
 
   return count;
+}
+
+// ── Rules ──────────────────────────────────────────────────────────────────────
+
+export function useRules(coupleId: string | null) {
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!coupleId) { setLoading(false); return; }
+    const q = query(
+      collection(db, "couples", coupleId, "rules"),
+      orderBy("createdAt", "asc")
+    );
+    const unsub = onSnapshot(q, (snap) => {
+      setRules(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Rule)));
+      setLoading(false);
+    });
+    return unsub;
+  }, [coupleId]);
+
+  return { rules, loading };
 }

@@ -117,6 +117,10 @@ export default function OnboardingPage() {
       if (!res.ok) throw new Error(data.error || "오류가 발생했어요.");
       setCreatedCoupleId(data.coupleId ?? null);
       setInviteCode(data.code ?? null);
+      // 이미 파트너가 연결된 경우 code가 null로 옴
+      if (data.coupleId && !data.code) {
+        setPartnerJoined(true);
+      }
     } catch (e: unknown) {
       setInviteError(e instanceof Error ? e.message : "링크 생성에 실패했어요.");
     } finally {
@@ -315,6 +319,10 @@ export default function OnboardingPage() {
                     다시 시도
                   </button>
                 </div>
+              ) : partnerJoined && !inviteUrl ? (
+                <span className="text-[14px] text-sage-deep">
+                  파트너가 이미 연결되어 있어요.
+                </span>
               ) : inviteUrl ? (
                 <span className="font-mono text-[14px] text-ink break-all leading-[1.5]">
                   {inviteUrl}
@@ -341,7 +349,7 @@ export default function OnboardingPage() {
           </div>
 
           {/* 연결 상태 */}
-          {inviteUrl && (
+          {(inviteUrl || partnerJoined) && (
             <div
               className="flex items-center gap-[12px] px-[16px] py-[14px] rounded-[12px]"
               style={{ background: partnerJoined ? "#E4E9DB" : "#FBF8F1", border: "1px solid #E3DACB" }}

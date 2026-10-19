@@ -46,10 +46,19 @@ export async function POST(req: NextRequest) {
 
     const db = getAdminDb();
 
-    // 이미 커플이 있으면 새 초대 코드만 재발급
+    // 이미 커플이 있으면 상황에 따라 처리
     const userSnap = await db.collection("users").doc(uid).get();
     if (userSnap.exists && userSnap.data()?.coupleId) {
       const existingCoupleId = userSnap.data()!.coupleId as string;
+
+      // 파트너가 이미 연결된 경우(2명) 초대 코드 재발급 안 함
+      const coupleSnap = await db.collection("couples").doc(existingCoupleId).get();
+      const existingMemberUids: string[] = coupleSnap.data()?.memberUids ?? [];
+      if (existingMemberUids.length >= 2) {
+        return NextResponse.json({ coupleId: existingCoupleId, code: null });
+      }
+
+      // 파트너 미연결 상태: 새 초대 코드 재발급
       const code = randomBytes(16).toString("hex");
       const codeHash = createHash("sha256").update(code).digest("hex");
       const expiresAt = Timestamp.fromMillis(Date.now() + 48 * 60 * 60 * 1000);

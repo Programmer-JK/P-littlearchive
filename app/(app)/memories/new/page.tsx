@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   writeBatch,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { useAuth } from "@/lib/auth-context";
 import { db, storage } from "@/lib/firebase";
 import { resizeImage } from "@/lib/image-utils";
@@ -94,6 +94,8 @@ export default function NewMemoryPage() {
     setSaving(true);
     setError("");
 
+    const uploadedPaths: string[] = [];
+
     try {
       const memoryId = doc(collection(db, "couples", coupleId, "memories")).id;
 
@@ -117,6 +119,7 @@ export default function NewMemoryPage() {
         const fullPath = `couples/${coupleId}/memories/${memoryId}/${photoId}.jpg`;
         const fullRef = ref(storage, fullPath);
         await uploadBytes(fullRef, fullBlob, { contentType: "image/jpeg" });
+        uploadedPaths.push(fullPath);
         const photoUrl = await getDownloadURL(fullRef);
 
         // Thumbnail (max 400px)
@@ -124,6 +127,7 @@ export default function NewMemoryPage() {
         const thumbPath = `couples/${coupleId}/memories/${memoryId}/${photoId}_thumb.jpg`;
         const thumbRef = ref(storage, thumbPath);
         await uploadBytes(thumbRef, thumbBlob, { contentType: "image/jpeg" });
+        uploadedPaths.push(thumbPath);
         const thumbUrl = await getDownloadURL(thumbRef);
 
         if (i === 0) { coverPath = fullPath; coverUrl = photoUrl; }
@@ -178,6 +182,10 @@ export default function NewMemoryPage() {
       showToast("추억이 저장됐어요");
       router.replace(`/memories/${memoryId}`);
     } catch (e) {
+      // 업로드된 파일 정리
+      for (const path of uploadedPaths) {
+        try { await deleteObject(ref(storage, path)); } catch {}
+      }
       console.error(e);
       setError("저장에 실패했어요. 다시 시도해 주세요.");
     } finally {

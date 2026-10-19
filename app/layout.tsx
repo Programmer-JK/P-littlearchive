@@ -40,12 +40,23 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "Our Little Archive",
   description: "우리의 작은 기록 보관함",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Our Archive",
+  },
+  icons: {
+    icon: "/icons/icon.svg",
+    apple: "/icons/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#F2EDE1",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

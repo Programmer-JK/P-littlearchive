@@ -111,6 +111,14 @@ export interface Song {
   createdAt: Timestamp;
 }
 
+// couples/{coupleId}/rules/{ruleId}
+export interface Rule {
+  id?: string;
+  content: string;
+  createdBy: string;
+  createdAt: Timestamp;
+}
+
 // users/{uid}
 export interface UserDoc {
   coupleId: string | null;

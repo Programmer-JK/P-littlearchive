@@ -13,7 +13,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useAuth } from "@/lib/auth-context";
-import { useAnniversaries } from "@/lib/firestore-hooks";
+import { useAnniversaries, useRules } from "@/lib/firestore-hooks";
 import { db } from "@/lib/firebase";
 import { formatYMD, toDateString, today } from "@/lib/utils";
 import { ConfirmModal } from "@/components/confirm-modal";
@@ -31,11 +31,10 @@ export default function SettingsPage() {
   const partnerUid = coupleData?.partnerUid;
 
   const { anniversaries } = useAnniversaries(coupleId);
+  const { rules } = useRules(coupleId);
 
   const [coupleName, setCoupleName] = useState(couple?.name ?? "");
-  const [herName, setHerName] = useState(
-    partnerUid ? (members[partnerUid]?.displayName ?? "") : ""
-  );
+  const partnerDisplayName = partnerUid ? (members[partnerUid]?.displayName ?? "") : "";
   const [meName, setMeName] = useState(
     myUid ? (members[myUid]?.displayName ?? "") : ""
   );
@@ -47,12 +46,16 @@ export default function SettingsPage() {
   const [annRepeat, setAnnRepeat] = useState(true);
   const [addingAnn, setAddingAnn] = useState(false);
 
+  // Rule draft
+  const [ruleContent, setRuleContent] = useState("");
+  const [addingRule, setAddingRule] = useState(false);
+
   const [saving, setSaving] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const todayStr = toDateString(today());
 
-  const herInitial = herName[0] ?? "?";
+  const partnerInitial = partnerDisplayName[0] ?? "?";
   const meInitial = meName[0] ?? "나";
 
   async function handleSaveNames() {
@@ -64,14 +67,9 @@ export default function SettingsPage() {
         startDate,
         updatedAt: serverTimestamp(),
       });
-      if (myUid && meName) {
+      if (meName.trim()) {
         await updateDoc(doc(db, "couples", coupleId, "members", myUid), {
-          displayName: meName,
-        });
-      }
-      if (partnerUid && herName) {
-        await updateDoc(doc(db, "couples", coupleId, "members", partnerUid), {
-          displayName: herName,
+          displayName: meName.trim(),
         });
       }
       await refetchCouple();
@@ -110,6 +108,33 @@ export default function SettingsPage() {
     try {
       await deleteDoc(doc(db, "couples", coupleId, "anniversaries", id));
       showToast("삭제됐어요");
+    } catch {
+      showToast("삭제에 실패했어요");
+    }
+  }
+
+  async function handleAddRule() {
+    if (!coupleId || !myUid || !ruleContent.trim()) return;
+    setAddingRule(true);
+    try {
+      await setDoc(doc(collection(db, "couples", coupleId, "rules")), {
+        content: ruleContent.trim(),
+        createdBy: myUid,
+        createdAt: serverTimestamp(),
+      });
+      setRuleContent("");
+      showToast("규칙이 추가됐어요");
+    } catch {
+      showToast("추가에 실패했어요");
+    } finally {
+      setAddingRule(false);
+    }
+  }
+
+  async function handleRemoveRule(id: string) {
+    if (!coupleId) return;
+    try {
+      await deleteDoc(doc(db, "couples", coupleId, "rules", id));
     } catch {
       showToast("삭제에 실패했어요");
     }
@@ -154,17 +179,16 @@ export default function SettingsPage() {
         <div className="flex flex-col gap-2">
           <div className="text-[13px] text-ink-2">두 사람</div>
           <div className="grid gap-[10px]" style={{ gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)" }}>
-            <label className="min-w-0 flex items-center gap-2 h-[48px] px-2 pl-[8px] rounded-[10px] border border-line bg-paper-2 cursor-text">
+            {/* 파트너 이름: 읽기 전용 */}
+            <div className="min-w-0 flex items-center gap-2 h-[48px] px-2 pl-[8px] rounded-[10px] border border-line bg-paper-2">
               <span className="w-[30px] h-[30px] flex-none rounded-full bg-avatar-her flex items-center justify-center font-heading text-[13px]">
-                {herInitial}
+                {partnerInitial}
               </span>
-              <input
-                value={herName}
-                onChange={(e) => setHerName(e.target.value)}
-                onBlur={handleSaveNames}
-                className="flex-1 min-w-0 h-[40px] border-0 bg-transparent text-[15px] text-ink outline-none"
-              />
-            </label>
+              <span className="flex-1 min-w-0 text-[15px] text-ink-2 truncate">
+                {partnerDisplayName || "파트너"}
+              </span>
+            </div>
+            {/* 내 이름: 편집 가능 */}
             <label className="min-w-0 flex items-center gap-2 h-[48px] px-2 pl-[8px] rounded-[10px] border border-line bg-paper-2 cursor-text">
               <span className="w-[30px] h-[30px] flex-none rounded-full bg-avatar-me flex items-center justify-center font-heading text-[13px]">
                 {meInitial}
@@ -177,6 +201,7 @@ export default function SettingsPage() {
               />
             </label>
           </div>
+          <div className="text-[12px] text-ink-3">파트너 이름은 파트너가 직접 설정해요.</div>
         </div>
 
         {/* Connection status */}
@@ -266,6 +291,52 @@ export default function SettingsPage() {
                 className="h-[44px] rounded-[8px] border-0 bg-sage-deep text-paper-2 text-[14px] cursor-pointer disabled:opacity-60"
               >
                 기념일 추가
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 둘만의 규칙 */}
+        <div className="flex flex-col gap-2">
+          <div className="text-[13px] text-ink-2">둘만의 규칙</div>
+          <div className="bg-paper-2 border border-line-soft rounded-[12px] overflow-hidden">
+            {rules.length === 0 && (
+              <div className="px-4 py-[18px] text-[13px] text-ink-3 text-center">
+                아직 규칙이 없어요. 둘만의 약속을 만들어 보세요.
+              </div>
+            )}
+            {rules.map((r, i) => (
+              <div
+                key={r.id!}
+                className="flex items-center gap-[10px] min-h-[52px] px-4 py-[8px] border-b border-line-faint"
+              >
+                <span className="text-[13px] text-ink-3 flex-none w-[20px]">{i + 1}</span>
+                <span className="flex-1 text-[15px] text-ink leading-[1.4]">{r.content}</span>
+                <button
+                  onClick={() => r.id && handleRemoveRule(r.id)}
+                  aria-label="삭제"
+                  className="w-[44px] h-[44px] border-0 bg-transparent text-ink-3 text-[20px] cursor-pointer"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {/* Add form */}
+            <div className="p-3 flex gap-2" style={{ background: "#F7F2E9" }}>
+              <input
+                value={ruleContent}
+                onChange={(e) => setRuleContent(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddRule()}
+                placeholder="예: 매주 금요일은 데이트 날"
+                className="flex-1 min-w-0 h-[44px] px-3 rounded-[8px] border border-line bg-polaroid text-[14px] text-ink outline-none focus:border-sage"
+              />
+              <button
+                onClick={handleAddRule}
+                disabled={addingRule || !ruleContent.trim()}
+                className="flex-none h-[44px] px-4 rounded-[8px] border-0 bg-sage-deep text-paper-2 text-[14px] cursor-pointer disabled:opacity-60"
+              >
+                추가
               </button>
             </div>
           </div>
