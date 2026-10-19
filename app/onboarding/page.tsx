@@ -106,7 +106,14 @@ export default function OnboardingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken, selfName: draft.selfName }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      if (!text) throw new Error(`서버 응답이 비어있어요. (${res.status})`);
+      let data: { coupleId?: string; code?: string; error?: string };
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`응답 파싱 오류: ${text.slice(0, 100)}`);
+      }
       if (!res.ok) throw new Error(data.error || "오류가 발생했어요.");
       setCreatedCoupleId(data.coupleId);
       setInviteCode(data.code);

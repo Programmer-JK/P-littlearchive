@@ -3,13 +3,11 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddBottomSheet } from "./add-bottom-sheet";
-import { useToast } from "./toast";
 
 export function TabBar() {
   const pathname = usePathname();
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
-  const { showToast } = useToast();
 
   const isHome = pathname === "/home" || pathname === "/";
   const isAlbum = pathname.startsWith("/album");
@@ -44,7 +42,7 @@ export function TabBar() {
         </button>
 
         <button
-          onClick={() => showToast("사진첩은 아직 준비 중이에요")}
+          onClick={() => router.push("/album")}
           className="h-[52px] border-0 bg-transparent flex flex-col items-center justify-center gap-[3px] cursor-pointer"
           style={{ color: tabColor(isAlbum) }}
         >
