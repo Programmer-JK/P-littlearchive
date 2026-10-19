@@ -87,10 +87,11 @@ function TimelineRow({
   const day = d.getDate();
   const dow = DOW[d.getDay()];
 
-  // Mock thumbs (up to 4 placeholder squares)
+  // Thumbs (up to 4) — first uses coverUrl if available
   const thumbCount = Math.min(memory.photoCount, 4);
   const thumbs = Array.from({ length: thumbCount }, (_, i) => ({
     bg: getPlaceholderGradient(`${memory.id}-${i}`),
+    url: i === 0 ? (memory.coverUrl ?? null) : null,
   }));
 
   return (
@@ -124,9 +125,14 @@ function TimelineRow({
               {thumbs.map((t, i) => (
                 <span
                   key={i}
-                  className="w-[58px] h-[58px] rounded-[4px] overflow-hidden"
-                  style={{ background: t.bg }}
-                />
+                  className="relative w-[58px] h-[58px] rounded-[4px] overflow-hidden"
+                  style={{ background: t.url ? undefined : t.bg }}
+                >
+                  {t.url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={t.url} alt="" className="w-full h-full object-cover" />
+                  )}
+                </span>
               ))}
             </span>
           )}
