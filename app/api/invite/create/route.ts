@@ -1,8 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes, createHash } from "crypto";
 import { Timestamp } from "firebase-admin/firestore";
-import { getAuth } from "firebase-admin/auth";
-import { getAdminApp, getAdminDb } from "@/lib/firebase-admin";
+import { getAdminDb } from "@/lib/firebase-admin";
+
+async function verifyIdToken(idToken: string): Promise<{ uid: string; picture: string | null }> {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  if (!apiKey) throw new Error("Firebase API key not configured");
+  const res = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { error?: { message?: string } };
+    throw new Error(err?.error?.message || "Token verification failed");
+  }
+  const data = await res.json() as { users?: Array<{ localId: string; photoUrl?: string }> };
+  const u = data.users?.[0];
+  if (!u) throw new Error("User not found");
+  return { uid: u.localId, picture: u.photoUrl ?? null };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -14,13 +34,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "필수 항목이 없어요." }, { status: 400 });
     }
 
-    const auth = getAuth(getAdminApp());
     let uid: string;
     let photoURL: string | null = null;
     try {
-      const decoded = await auth.verifyIdToken(idToken);
+      const decoded = await verifyIdToken(idToken);
       uid = decoded.uid;
-      photoURL = decoded.picture ?? null;
+      photoURL = decoded.picture;
     } catch {
       return NextResponse.json({ error: "인증 오류가 발생했어요." }, { status: 401 });
     }
