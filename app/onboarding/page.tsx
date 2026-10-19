@@ -115,8 +115,8 @@ export default function OnboardingPage() {
         throw new Error(`응답 파싱 오류: ${text.slice(0, 100)}`);
       }
       if (!res.ok) throw new Error(data.error || "오류가 발생했어요.");
-      setCreatedCoupleId(data.coupleId);
-      setInviteCode(data.code);
+      setCreatedCoupleId(data.coupleId ?? null);
+      setInviteCode(data.code ?? null);
     } catch (e: unknown) {
       setInviteError(e instanceof Error ? e.message : "링크 생성에 실패했어요.");
     } finally {
