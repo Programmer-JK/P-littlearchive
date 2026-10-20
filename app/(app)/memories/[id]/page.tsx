@@ -41,6 +41,7 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
   const [wishItem, setWishItem] = useState<WishlistItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [currentPhotoIdx, setCurrentPhotoIdx] = useState(0);
 
   const { photos } = useMemoryPhotos(coupleId, id);
@@ -66,6 +67,8 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
 
   async function handleDelete() {
     if (!coupleId || !id) return;
+    setDeleting(true);
+    setShowConfirm(false);
     try {
       // Delete photos from Storage
       for (const photo of photos) {
@@ -103,6 +106,7 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
       showToast("추억이 삭제됐어요");
       router.back();
     } catch {
+      setDeleting(false);
       showToast("삭제에 실패했어요");
     }
   }
@@ -143,13 +147,15 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
         <div className="flex gap-1">
           <button
             onClick={() => router.push(`/memories/${id}/edit`)}
-            className="h-[44px] px-3 border-0 bg-transparent text-[14px] text-sage-deep cursor-pointer"
+            disabled={deleting}
+            className="h-[44px] px-3 border-0 bg-transparent text-[14px] text-sage-deep cursor-pointer disabled:opacity-40"
           >
             수정
           </button>
           <button
             onClick={() => setShowConfirm(true)}
-            className="h-[44px] px-3 border-0 bg-transparent text-[14px] text-clay-deep cursor-pointer"
+            disabled={deleting}
+            className="h-[44px] px-3 border-0 bg-transparent text-[14px] text-clay-deep cursor-pointer disabled:opacity-40"
           >
             삭제
           </button>
@@ -306,6 +312,21 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
           onConfirm={handleDelete}
           onCancel={() => setShowConfirm(false)}
         />
+      )}
+
+      {/* Delete progress overlay */}
+      {deleting && (
+        <div
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3"
+          style={{ background: "rgba(242,237,225,.88)" }}
+        >
+          <div
+            className="w-9 h-9 rounded-full border-[3px] border-sage-tint"
+            style={{ borderTopColor: "#50634A", animation: "spin 0.8s linear infinite" }}
+          />
+          <span className="text-[14px] text-ink-2">삭제 중이에요…</span>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
       )}
     </div>
   );

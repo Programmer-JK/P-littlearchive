@@ -10,6 +10,7 @@ import {
   useAnniversaries,
   useUnreadNotes,
   useUnreadSongs,
+  useRules,
 } from "@/lib/firestore-hooks";
 import {
   dayCount,
@@ -18,10 +19,10 @@ import {
   getPlaceholderGradient,
   getTilt,
   formatDot,
-  ddLabel,
   today,
   parseLocalDate,
 } from "@/lib/utils";
+import type { Memory, WishlistItem } from "@/lib/types";
 
 export default function HomePage() {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function HomePage() {
   const { memories } = useRecentMemories(coupleId, 4);
   const { items: wishItems } = useWishlist(coupleId);
   const { anniversaries } = useAnniversaries(coupleId);
+  const { rules } = useRules(coupleId);
   const unreadCount = useUnreadNotes(coupleId, myUid);
   const unreadSongCount = useUnreadSongs(coupleId, myUid);
 
@@ -71,7 +73,6 @@ export default function HomePage() {
     })
     .slice(0, 3);
 
-  // Unread note / song banners
   const hasUnread = unreadCount > 0;
   const hasUnreadSong = unreadSongCount > 0;
 
@@ -102,14 +103,10 @@ export default function HomePage() {
             aria-label="우리 공간 설정"
             className="h-[44px] px-1 border-0 bg-transparent flex items-center cursor-pointer"
           >
-            <span
-              className="w-[34px] h-[34px] rounded-full bg-avatar-her border-2 border-paper flex items-center justify-center font-heading text-[14px]"
-            >
+            <span className="w-[34px] h-[34px] rounded-full bg-avatar-her border-2 border-paper flex items-center justify-center font-heading text-[14px]">
               {herInitial}
             </span>
-            <span
-              className="w-[34px] h-[34px] -ml-[10px] rounded-full bg-avatar-me border-2 border-paper flex items-center justify-center font-heading text-[14px]"
-            >
+            <span className="w-[34px] h-[34px] -ml-[10px] rounded-full bg-avatar-me border-2 border-paper flex items-center justify-center font-heading text-[14px]">
               {meInitial}
             </span>
           </button>
@@ -166,10 +163,7 @@ export default function HomePage() {
               transform: "rotate(-5deg)",
             }}
           >
-            <span
-              className="block w-full h-full"
-              style={{ background: getPlaceholderGradient("note-preview") }}
-            />
+            <span className="block w-full h-full" style={{ background: getPlaceholderGradient("note-preview") }} />
           </span>
           <span className="flex-1 min-w-0 flex flex-col gap-[3px]">
             <span className="font-heading text-[16px] text-ink">
@@ -216,16 +210,84 @@ export default function HomePage() {
       <div className="grid grid-cols-2 gap-[10px]">
         <button
           onClick={() => router.push("/memories/new")}
-          className="h-[52px] rounded-[12px] border-0 bg-sage-deep text-paper-2 text-[15px] cursor-pointer"
+          className="h-[52px] rounded-[10px] border-0 text-[15px] cursor-pointer font-heading"
+          style={{ background: "#50634A", color: "#FBF8F1" }}
         >
           + 추억 남기기
         </button>
         <button
           onClick={() => router.push("/wishlist?new=1")}
-          className="h-[52px] rounded-[12px] border border-chip-off-bd bg-transparent text-ink text-[15px] cursor-pointer"
+          className="h-[52px] rounded-[10px] border text-[15px] cursor-pointer font-heading"
+          style={{ background: "#FBF8F1", color: "#2F2B25", borderColor: "#D9CFBE" }}
         >
           + 하고 싶은 것
         </button>
+      </div>
+
+      {/* 우리의 약속 (Rules) */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="font-heading text-[19px]">우리의 약속</div>
+          <button
+            onClick={() => router.push("/rules")}
+            className="h-[36px] border-0 bg-transparent text-[13px] text-ink-2 cursor-pointer p-0"
+          >
+            {rules.length > 0 ? "관리 →" : "만들기 →"}
+          </button>
+        </div>
+        {rules.length === 0 ? (
+          <button
+            onClick={() => router.push("/rules")}
+            className="w-full text-left p-[16px_18px] rounded-[12px] border cursor-pointer"
+            style={{
+              background: "#FBF8F1",
+              borderColor: "#EAE2D4",
+              borderStyle: "dashed",
+            }}
+          >
+            <span className="font-hand text-[20px] text-ink-3 leading-none">
+              둘만의 약속을 만들어 보세요 ✏
+            </span>
+          </button>
+        ) : (
+          <div
+            className="relative bg-paper-2 rounded-[12px] overflow-hidden"
+            style={{
+              border: "1px solid #EAE2D4",
+              boxShadow: "0 1px 2px rgba(60,40,20,.04), 0 6px 16px -10px rgba(60,40,20,.18)",
+            }}
+          >
+            {/* Pin decoration */}
+            <div
+              className="absolute top-[-1px] left-1/2 -translate-x-1/2 w-[8px] h-[8px] rounded-full z-10"
+              style={{ background: "#C98B6B", boxShadow: "0 1px 3px rgba(60,40,20,.3)" }}
+            />
+            <div className="pt-[14px] pb-[4px]">
+              {rules.slice(0, 5).map((r, i) => (
+                <div
+                  key={r.id!}
+                  className="flex items-start gap-[10px] px-5 py-[9px]"
+                  style={{
+                    borderBottom: i < Math.min(rules.length, 5) - 1 ? "1px solid #EFE8DC" : "none",
+                  }}
+                >
+                  <span
+                    className="font-display text-[13px] flex-none mt-[1px]"
+                    style={{ color: "#C98B6B" }}
+                  >
+                    {i + 1}.
+                  </span>
+                  <span className="font-hand text-[18px] text-ink-hand leading-[1.35]">{r.content}</span>
+                </div>
+              ))}
+              {rules.length > 5 && (
+                <div className="px-5 py-[8px] text-[12px] text-ink-3">
+                  외 {rules.length - 5}개의 약속
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Recent memories */}
@@ -241,7 +303,7 @@ export default function HomePage() {
         </div>
         {memories.length === 0 ? (
           <div className="text-[13px] text-ink-3 text-center py-4">
-            아직 추억이 없어요. 첫 번째 추억을 남겨 보세요!
+            아직 추억이 없어요. 첫 번째 추억을 남겨 보세요.
           </div>
         ) : (
           <div
@@ -410,5 +472,3 @@ function WishPlanRow({
   );
 }
 
-// Re-export types for use in sub-components
-import type { Memory, WishlistItem } from "@/lib/types";

@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   doc,
@@ -45,10 +45,6 @@ export default function SettingsPage() {
   const [annDate, setAnnDate] = useState("");
   const [annRepeat, setAnnRepeat] = useState(true);
   const [addingAnn, setAddingAnn] = useState(false);
-
-  // Rule draft
-  const [ruleContent, setRuleContent] = useState("");
-  const [addingRule, setAddingRule] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -113,33 +109,6 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleAddRule() {
-    if (!coupleId || !myUid || !ruleContent.trim()) return;
-    setAddingRule(true);
-    try {
-      await setDoc(doc(collection(db, "couples", coupleId, "rules")), {
-        content: ruleContent.trim(),
-        createdBy: myUid,
-        createdAt: serverTimestamp(),
-      });
-      setRuleContent("");
-      showToast("규칙이 추가됐어요");
-    } catch {
-      showToast("추가에 실패했어요");
-    } finally {
-      setAddingRule(false);
-    }
-  }
-
-  async function handleRemoveRule(id: string) {
-    if (!coupleId) return;
-    try {
-      await deleteDoc(doc(db, "couples", coupleId, "rules", id));
-    } catch {
-      showToast("삭제에 실패했어요");
-    }
-  }
-
   async function handleLogout() {
     await signOutUser();
     router.replace("/login");
@@ -149,6 +118,20 @@ export default function SettingsPage() {
 
   return (
     <div className="absolute inset-0 z-35 bg-paper overflow-y-auto animate-ola-in" style={{ paddingTop: "54px", paddingBottom: "48px" }}>
+      {/* Saving overlay */}
+      {saving && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3"
+          style={{ background: "rgba(242,237,225,.82)" }}
+        >
+          <div
+            className="w-9 h-9 rounded-full border-[3px] border-sage-tint"
+            style={{ borderTopColor: "#50634A", animation: "spin 0.8s linear infinite" }}
+          />
+          <span className="text-[14px] text-ink-2">저장 중이에요…</span>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center gap-1 px-3">
         <button
@@ -296,50 +279,24 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* 둘만의 규칙 */}
+        {/* 둘만의 규칙 — 전용 화면으로 이동 */}
         <div className="flex flex-col gap-2">
-          <div className="text-[13px] text-ink-2">둘만의 규칙</div>
-          <div className="bg-paper-2 border border-line-soft rounded-[12px] overflow-hidden">
-            {rules.length === 0 && (
-              <div className="px-4 py-[18px] text-[13px] text-ink-3 text-center">
-                아직 규칙이 없어요. 둘만의 약속을 만들어 보세요.
-              </div>
-            )}
-            {rules.map((r, i) => (
-              <div
-                key={r.id!}
-                className="flex items-center gap-[10px] min-h-[52px] px-4 py-[8px] border-b border-line-faint"
-              >
-                <span className="text-[13px] text-ink-3 flex-none w-[20px]">{i + 1}</span>
-                <span className="flex-1 text-[15px] text-ink leading-[1.4]">{r.content}</span>
-                <button
-                  onClick={() => r.id && handleRemoveRule(r.id)}
-                  aria-label="삭제"
-                  className="w-[44px] h-[44px] border-0 bg-transparent text-ink-3 text-[20px] cursor-pointer"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-
-            {/* Add form */}
-            <div className="p-3 flex gap-2" style={{ background: "#F7F2E9" }}>
-              <input
-                value={ruleContent}
-                onChange={(e) => setRuleContent(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddRule()}
-                placeholder="예: 매주 금요일은 데이트 날"
-                className="flex-1 min-w-0 h-[44px] px-3 rounded-[8px] border border-line bg-polaroid text-[14px] text-ink outline-none focus:border-sage"
-              />
-              <button
-                onClick={handleAddRule}
-                disabled={addingRule || !ruleContent.trim()}
-                className="flex-none h-[44px] px-4 rounded-[8px] border-0 bg-sage-deep text-paper-2 text-[14px] cursor-pointer disabled:opacity-60"
-              >
-                추가
-              </button>
+          <div className="text-[13px] text-ink-2">둘만의 약속</div>
+          <button
+            onClick={() => router.push("/rules")}
+            className="w-full flex items-center justify-between min-h-[54px] px-4 py-3 rounded-[12px] border cursor-pointer text-left"
+            style={{ background: "#FBF8F1", borderColor: "#EAE2D4" }}
+          >
+            <div className="flex flex-col gap-[3px]">
+              <span className="text-[15px] text-ink font-heading">우리의 약속 관리</span>
+              <span className="text-[12px] text-ink-3">
+                {rules.length > 0 ? `${rules.length}개의 약속` : "아직 약속이 없어요"}
+              </span>
             </div>
-          </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9182" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
 
         {/* Logout */}

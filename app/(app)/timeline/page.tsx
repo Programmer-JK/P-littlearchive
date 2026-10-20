@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { useMemories } from "@/lib/firestore-hooks";
+import { useMemories, useMemoryPhotos } from "@/lib/firestore-hooks";
 import { getPlaceholderGradient, parseLocalDate, formatDot } from "@/lib/utils";
 import type { Memory } from "@/lib/types";
 
@@ -65,6 +65,7 @@ export default function TimelinePage() {
                 <TimelineRow
                   key={m.id!}
                   memory={m}
+                  coupleId={coupleId}
                   onClick={() => router.push(`/memories/${m.id}`)}
                 />
               ))}
@@ -78,20 +79,28 @@ export default function TimelinePage() {
 
 function TimelineRow({
   memory,
+  coupleId,
   onClick,
 }: {
   memory: Memory;
+  coupleId: string | null;
   onClick: () => void;
 }) {
   const d = parseLocalDate(memory.date);
   const day = d.getDate();
   const dow = DOW[d.getDay()];
 
-  // Thumbs (up to 4) — first uses coverUrl if available
+  // Load actual photos from subcollection
+  const { photos } = useMemoryPhotos(
+    coupleId,
+    memory.photoCount > 0 ? (memory.id ?? null) : null
+  );
+
+  // Thumbs (up to 4) — use loaded photo thumbs, fall back to placeholder
   const thumbCount = Math.min(memory.photoCount, 4);
   const thumbs = Array.from({ length: thumbCount }, (_, i) => ({
     bg: getPlaceholderGradient(`${memory.id}-${i}`),
-    url: i === 0 ? (memory.coverUrl ?? null) : null,
+    url: photos[i]?.thumbUrl ?? (i === 0 ? memory.coverUrl : null),
   }));
 
   return (
