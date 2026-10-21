@@ -187,7 +187,8 @@ export default function NewMemoryPage() {
         try { await deleteObject(ref(storage, path)); } catch {}
       }
       console.error(e);
-      setError("저장에 실패했어요. 다시 시도해 주세요.");
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(`저장에 실패했어요. (${msg})`);
     } finally {
       setSaving(false);
     }

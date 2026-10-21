@@ -16,6 +16,7 @@ export default function InvitePage(props: { params: Promise<{ code: string }> })
   const { user, loading, signInWithGoogle, refetchCouple } = useAuth();
   const [status, setStatus] = useState<Status>("pending");
   const [error, setError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [acceptedCoupleId, setAcceptedCoupleId] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState("");
 
@@ -41,6 +42,8 @@ export default function InvitePage(props: { params: Promise<{ code: string }> })
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "초대 수락에 실패했어요");
       setAcceptedCoupleId(data.coupleId);
+      // 초대 수락 즉시 coupleData 갱신 — 이름 저장 전에도 앱이 정상 작동하도록
+      await refetchCouple();
       setStatus("naming");
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "오류가 발생했어요";
@@ -52,6 +55,7 @@ export default function InvitePage(props: { params: Promise<{ code: string }> })
   async function handleSaveName() {
     if (!displayName.trim() || !user || !acceptedCoupleId) return;
     setStatus("saving");
+    setNameError("");
     try {
       await updateDoc(
         doc(db, "couples", acceptedCoupleId, "members", user.uid),
@@ -59,7 +63,9 @@ export default function InvitePage(props: { params: Promise<{ code: string }> })
       );
       await refetchCouple();
       router.replace("/");
-    } catch {
+    } catch (e) {
+      console.error("이름 저장 실패:", e);
+      setNameError("저장에 실패했어요. 다시 시도해 주세요.");
       setStatus("naming");
     }
   }
@@ -123,6 +129,10 @@ export default function InvitePage(props: { params: Promise<{ code: string }> })
         </div>
 
         <div className="flex-1" />
+
+        {nameError && (
+          <div className="mb-3 text-[13px] text-clay-deep text-center">{nameError}</div>
+        )}
 
         <button
           onClick={handleSaveName}
