@@ -115,7 +115,7 @@ export default function RulesPage() {
             </div>
           ) : rules.length === 0 ? (
             <div className="px-5 py-[28px] text-center">
-              <p className="font-hand text-[22px] text-ink-3 leading-none">아직 약속이 없어요</p>
+              <p className="font-heading text-[20px] text-ink-3 leading-none">아직 약속이 없어요</p>
               <p className="text-[13px] text-ink-3 mt-2">아래에 첫 번째 약속을 적어 보세요.</p>
             </div>
           ) : (
@@ -136,7 +136,7 @@ export default function RulesPage() {
                   >
                     {i + 1}.
                   </span>
-                  <span className="flex-1 font-hand text-[20px] text-ink-hand leading-[1.35]">
+                  <span className="flex-1 text-[16px] text-ink leading-[1.5]">
                     {r.content}
                   </span>
                   <button

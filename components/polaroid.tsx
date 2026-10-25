@@ -1,13 +1,12 @@
-import { getTilt, getPlaceholderGradient } from "@/lib/utils";
+import { getPlaceholderGradient, formatFilmDate } from "@/lib/utils";
 
 interface PolaroidProps {
   id: string;
   photoUrl?: string | null;
   thumbUrl?: string | null;
   caption?: string;
+  date?: string; // YYYY-MM-DD
   dateDot?: string;
-  tilt?: boolean;
-  tape?: boolean;
   width?: number;
   onClick?: () => void;
   className?: string;
@@ -18,14 +17,12 @@ export function Polaroid({
   photoUrl,
   thumbUrl,
   caption,
+  date,
   dateDot,
-  tilt = true,
-  tape = false,
   width,
   onClick,
   className = "",
 }: PolaroidProps) {
-  const tiltDeg = tilt ? getTilt(id) : 0;
   const bg = photoUrl || thumbUrl
     ? undefined
     : getPlaceholderGradient(id);
@@ -35,17 +32,10 @@ export function Polaroid({
       onClick={onClick}
       className={`relative flex flex-col gap-[7px] border-0 p-[8px_8px_12px] bg-polaroid cursor-pointer text-left ${className}`}
       style={{
-        transform: `rotate(${tiltDeg}deg)`,
         boxShadow: "0 10px 20px -12px rgba(60,40,20,.42)",
         width: width ? `${width}px` : undefined,
       }}
     >
-      {tape && (
-        <span
-          className="absolute top-[-9px] left-1/2 w-[54px] h-[18px] -translate-x-1/2 z-10"
-          style={{ background: "rgba(222,208,170,.8)", transform: "translateX(-50%) rotate(3deg)" }}
-        />
-      )}
       <div
         className="relative aspect-square w-full overflow-hidden"
         style={{ background: bg }}
@@ -58,11 +48,17 @@ export function Polaroid({
             className="w-full h-full object-cover"
           />
         )}
+        {date && (
+          <span
+            className="absolute bottom-[6px] right-[7px] font-mono text-[11px] leading-none select-none"
+            style={{ color: "#FF8C00", textShadow: "0 0 6px rgba(0,0,0,.5)" }}
+          >
+            {formatFilmDate(date)}
+          </span>
+        )}
       </div>
       {caption && (
-        <div
-          className="font-hand text-[19px] leading-none text-ink-hand whitespace-nowrap overflow-hidden text-ellipsis"
-        >
+        <div className="text-[14px] leading-tight text-ink-2 whitespace-nowrap overflow-hidden text-ellipsis">
           {caption}
         </div>
       )}

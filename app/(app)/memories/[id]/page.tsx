@@ -19,10 +19,10 @@ import { db, storage } from "@/lib/firebase";
 import { useMemoryPhotos } from "@/lib/firestore-hooks";
 import {
   getPlaceholderGradient,
-  getTilt,
   formatDot,
   formatLong,
   formatYMD,
+  formatFilmDate,
 } from "@/lib/utils";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { useToast } from "@/components/toast";
@@ -123,7 +123,6 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
     );
   }
 
-  const tilt = getTilt(id);
   const coverBg = getPlaceholderGradient(id);
   const currentPhoto = photos[currentPhotoIdx];
 
@@ -170,17 +169,8 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
             padding: "12px 12px 16px",
             background: "#FFFDF8",
             boxShadow: "0 16px 30px -18px rgba(60,40,20,.5)",
-            transform: `rotate(${tilt}deg)`,
           }}
         >
-          {/* Tape */}
-          <div
-            className="absolute top-[-10px] left-1/2 w-[84px] h-[22px] z-10"
-            style={{
-              background: "rgba(222,208,170,.8)",
-              transform: "translateX(-50%) rotate(2deg)",
-            }}
-          />
           <div
             className="relative overflow-hidden"
             style={{
@@ -204,9 +194,12 @@ export default function MemoryDetailPage(props: { params: Promise<{ id: string }
                 {currentPhotoIdx + 1} / {photos.length}
               </span>
             )}
-          </div>
-          <div className="font-hand text-[26px] leading-none text-ink-hand text-center pt-3">
-            {formatDot(memory.date)}
+            <span
+              className="absolute bottom-[6px] right-[8px] font-mono text-[12px] leading-none select-none"
+              style={{ color: "#FF8C00", textShadow: "0 0 6px rgba(0,0,0,.5)" }}
+            >
+              {formatFilmDate(memory.date)}
+            </span>
           </div>
         </div>
       </div>

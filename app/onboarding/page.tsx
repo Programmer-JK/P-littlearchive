@@ -470,7 +470,7 @@ export default function OnboardingPage() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute left-0 right-0 bottom-[9px] font-hand text-[23px] text-ink-hand text-center">
+            <div className="absolute left-0 right-0 bottom-[9px] font-mono text-[13px] text-ink-2 text-center tracking-wide">
               {obDateDot} ~
             </div>
           </div>

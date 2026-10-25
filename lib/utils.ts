@@ -212,6 +212,12 @@ export function getTilt(id: string): number {
   return ((hash % 49) - 24) / 10; // -2.4 ~ +2.4
 }
 
+/** Film-camera date stamp: '26 10 11 */
+export function formatFilmDate(date: string): string {
+  const [y, m, d] = date.split('-');
+  return `'${y.slice(2)} ${m} ${d}`;
+}
+
 // ── Formatting ────────────────────────────────────────────────────────────────
 
 /** Format cost: 30,000원 */

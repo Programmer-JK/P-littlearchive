@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   doc,
@@ -14,8 +14,6 @@ import { useMemories, useNotes, useSongs } from "@/lib/firestore-hooks";
 import { db } from "@/lib/firebase";
 import {
   getPlaceholderGradient,
-  getTilt,
-  formatDot,
   formatRelativeTime,
 } from "@/lib/utils";
 import type { Memory, Note, Song } from "@/lib/types";
@@ -120,6 +118,16 @@ export default function AlbumPage() {
   // Total photo count
   const totalPhotos = memories.reduce((s, m) => s + (m.photoCount ?? 0), 0);
 
+  // Sequential numbers: oldest memory = No.0001
+  const memoryNumbers = useMemo(() => {
+    const sorted = [...memories].sort((a, b) => a.date.localeCompare(b.date));
+    const map = new Map<string, number>();
+    sorted.forEach((m, i) => { if (m.id) map.set(m.id, i + 1); });
+    return map;
+  }, [memories]);
+
+  const members = coupleData?.members ?? {};
+
   return (
     <div className="flex flex-col gap-4">
       {/* Title */}
@@ -183,29 +191,28 @@ export default function AlbumPage() {
             ))}
           </div>
 
-          {/* Grid groups */}
+          {/* Card list */}
           {groups.length === 0 ? (
             <div className="px-5 py-10 text-center flex flex-col gap-[6px]">
-              <div className="font-hand text-[26px] text-ink-2">아직 비어 있는 페이지</div>
+              <div className="font-heading text-[22px] text-ink-2">아직 비어 있는 페이지</div>
               <div className="text-[13px] text-ink-3">조건에 맞는 추억이 없어요</div>
             </div>
           ) : (
             groups.map((g) => (
-              <div key={g.yearMonth} className="px-5 pt-2 flex flex-col gap-[14px]">
-                <div className="flex items-baseline gap-2">
+              <div key={g.yearMonth} className="px-5 pt-2 flex flex-col gap-[10px]">
+                <div className="flex items-baseline gap-2 pb-1">
                   <span className="font-heading text-[16px]">{g.label}</span>
                   <span className="text-[12px] text-ink-3">{g.items.length}개</span>
                 </div>
-                <div className="grid grid-cols-2 gap-x-4" style={{ rowGap: "22px" }}>
-                  {g.items.map((m, idx) => (
-                    <AlbumPolaroid
-                      key={m.id!}
-                      memory={m}
-                      tape={(idx + 1) % 3 === 0}
-                      onClick={() => router.push(`/memories/${m.id}`)}
-                    />
-                  ))}
-                </div>
+                {g.items.map((m) => (
+                  <AlbumCard
+                    key={m.id!}
+                    memory={m}
+                    num={memoryNumbers.get(m.id!) ?? 0}
+                    members={members}
+                    onClick={() => router.push(`/memories/${m.id}`)}
+                  />
+                ))}
               </div>
             ))
           )}
@@ -331,60 +338,102 @@ function Chip({
   );
 }
 
-function AlbumPolaroid({
+const DOW_KO = ['일', '월', '화', '수', '목', '금', '토'];
+
+function AlbumCard({
   memory,
-  tape,
+  num,
+  members,
   onClick,
 }: {
   memory: Memory;
-  tape: boolean;
+  num: number;
+  members: Record<string, { displayName: string }>;
   onClick: () => void;
 }) {
-  const bg = getPlaceholderGradient(memory.id ?? memory.title);
-  const rot = getTilt(memory.id ?? memory.title);
+  const [y, mo, d] = memory.date.split('-');
+  const dow = DOW_KO[new Date(parseInt(y), parseInt(mo) - 1, parseInt(d)).getDay()];
+  const dateStr = `${y}.${mo}.${d} ${dow}`;
+  const authorName = members[memory.createdBy]?.displayName ?? '?';
 
   return (
     <button
       onClick={onClick}
-      className="relative flex flex-col gap-[7px] border-0 cursor-pointer text-left"
+      className="w-full text-left cursor-pointer border-0 bg-paper-2 rounded-[4px] overflow-hidden"
       style={{
-        padding: "8px 8px 12px",
-        background: "#FFFDF8",
-        boxShadow: "0 10px 20px -12px rgba(60,40,20,.42)",
-        transform: `rotate(${rot}deg)`,
+        border: "1px solid #E3DACB",
+        boxShadow: "0 1px 0 rgba(60,40,20,.04), 0 4px 14px -8px rgba(60,40,20,.18)",
       }}
     >
-      {tape && (
-        <span
-          className="absolute top-[-9px] left-1/2 w-[54px] h-[18px] z-10"
-          style={{
-            background: "rgba(222,208,170,.8)",
-            transform: "translateX(-50%) rotate(3deg)",
-          }}
-        />
-      )}
+      {/* Cover photo with OLA overlay */}
       <div
-        className="relative aspect-square w-full overflow-hidden"
-        style={{ background: memory.coverUrl ? undefined : bg }}
+        className="relative w-full overflow-hidden"
+        style={{
+          aspectRatio: '4/5',
+          background: getPlaceholderGradient(memory.id ?? memory.title),
+        }}
       >
         {memory.coverUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={memory.coverUrl} alt={memory.title} className="w-full h-full object-cover" />
+          <img src={memory.coverUrl} alt="" className="w-full h-full object-cover" />
         )}
-        {memory.photoCount > 1 && (
+        {/* Film-frame label overlay */}
+        <div
+          className="absolute top-0 left-0 right-0 flex items-center justify-between px-[14px] py-[9px]"
+          style={{ background: "rgba(251,248,241,.72)" }}
+        >
           <span
-            className="absolute right-[5px] top-[5px] px-[6px] py-[1px] rounded-full text-[11px]"
-            style={{ background: "rgba(251,248,241,.85)", color: "#4A443B" }}
+            className="font-display text-[10px] tracking-[.14em] uppercase"
+            style={{ color: "#6E665A" }}
           >
-            +{memory.photoCount - 1}
+            Our Little Archive
           </span>
+          <span className="font-mono text-[11px]" style={{ color: "#6E665A" }}>
+            No.{String(num).padStart(4, '0')}
+          </span>
+        </div>
+      </div>
+
+      <div className="mx-[18px] mt-0" style={{ height: "1px", background: "#E3DACB" }} />
+
+      {/* Meta */}
+      <div className="grid py-[10px]" style={{ gridTemplateColumns: "1fr 1fr auto" }}>
+        <div className="px-[18px] py-[2px]" style={{ borderRight: "1px solid #E3DACB" }}>
+          <div className="text-[10px] mb-[3px]" style={{ color: "#9A9182" }}>날짜</div>
+          <div className="font-heading text-[13px] text-ink leading-tight">{dateStr}</div>
+        </div>
+        <div className="px-[14px] py-[2px]" style={{ borderRight: "1px solid #E3DACB" }}>
+          <div className="text-[10px] mb-[3px]" style={{ color: "#9A9182" }}>장소</div>
+          <div className="text-[13px] text-ink leading-tight truncate">{memory.place || '—'}</div>
+        </div>
+        <div className="px-[14px] py-[2px]">
+          <div className="text-[10px] mb-[3px]" style={{ color: "#9A9182" }}>매수</div>
+          <div className="text-[13px] text-ink leading-tight">{memory.photoCount}</div>
+        </div>
+      </div>
+
+      <div className="mx-[18px]" style={{ height: "1px", background: "#E3DACB" }} />
+
+      {/* Body */}
+      <div className="px-[18px] pt-[14px] pb-[16px]">
+        <div className="font-heading text-[21px] leading-[1.25] text-ink mb-[8px]">
+          {memory.title}
+        </div>
+        {memory.content && (
+          <div
+            className="text-[13px] text-ink-2 leading-[1.75] mb-[10px] overflow-hidden"
+            style={{
+              display: '-webkit-box' as const,
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical' as const,
+            }}
+          >
+            {memory.content}
+          </div>
         )}
-      </div>
-      <div className="font-hand text-[21px] leading-none text-ink-hand whitespace-nowrap overflow-hidden text-ellipsis">
-        {memory.title}
-      </div>
-      <div className="text-[11px] text-ink-3 whitespace-nowrap overflow-hidden text-ellipsis">
-        {formatDot(memory.date)}{memory.place ? ` · ${memory.place}` : ""}
+        <div className="text-[11px] text-right" style={{ color: "#9A9182" }}>
+          {authorName} 남김
+        </div>
       </div>
     </button>
   );
@@ -480,7 +529,7 @@ function SongCard({
             <div className="text-[12px] text-ink-3">{song.artist}</div>
           )}
           {song.message && (
-            <div className="font-hand text-[19px] leading-snug text-ink-hand mt-[4px]">
+            <div className="text-[15px] leading-snug text-ink-2 mt-[4px]">
               {song.message}
             </div>
           )}
@@ -501,7 +550,6 @@ function NoteCard({
 }) {
   const isMine = note.from === myUid;
   const bg = getPlaceholderGradient(note.id ?? note.from);
-  const rot = getTilt(note.id ?? note.from);
   const fromName = members[note.from]?.displayName ?? "?";
   const toName = members[note.to]?.displayName ?? "?";
   const fromInitial = fromName[0] ?? "?";
@@ -513,6 +561,16 @@ function NoteCard({
   const timeStr = note.createdAt?.toDate
     ? formatRelativeTime(note.createdAt.toDate())
     : "";
+
+  const noteDate = note.createdAt?.toDate
+    ? (() => {
+        const d = note.createdAt.toDate();
+        const y = String(d.getFullYear()).slice(2);
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `'${y} ${m} ${day}`;
+      })()
+    : null;
 
   return (
     <div
@@ -549,7 +607,6 @@ function NoteCard({
           padding: "8px 8px 12px",
           background: "#FFFDF8",
           boxShadow: "0 12px 24px -14px rgba(60,40,20,.45)",
-          transform: `rotate(${rot}deg)`,
         }}
       >
         <div
@@ -560,9 +617,17 @@ function NoteCard({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={note.thumbUrl} alt="" className="w-full h-full object-cover" />
           )}
+          {noteDate && (
+            <span
+              className="absolute bottom-[6px] right-[7px] font-mono text-[11px] leading-none select-none"
+              style={{ color: "#FF8C00", textShadow: "0 0 6px rgba(0,0,0,.5)" }}
+            >
+              {noteDate}
+            </span>
+          )}
         </div>
         {note.message && (
-          <div className="font-hand text-[21px] leading-[1.15] text-ink-hand px-1">
+          <div className="text-[15px] leading-[1.4] text-ink-2 px-1">
             {note.message}
           </div>
         )}

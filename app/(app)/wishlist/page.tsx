@@ -248,7 +248,7 @@ export default function WishlistPage() {
       <div className="px-5 flex flex-col gap-3">
         {filtered.length === 0 ? (
           <div className="py-9 text-center flex flex-col gap-[6px]">
-            <div className="font-hand text-[26px] text-ink-2">여기는 아직 비어 있어요</div>
+            <div className="font-heading text-[22px] text-ink-2">여기는 아직 비어 있어요</div>
             <div className="text-[13px] text-ink-3">가고 싶은 곳, 먹고 싶은 것을 담아 두세요</div>
           </div>
         ) : (

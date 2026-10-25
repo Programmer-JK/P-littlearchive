@@ -14,7 +14,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/lib/auth-context";
 import { db, storage } from "@/lib/firebase";
 import { resizeImage } from "@/lib/image-utils";
-import { getTilt, getPlaceholderGradient } from "@/lib/utils";
+import { getPlaceholderGradient } from "@/lib/utils";
 import { useToast } from "@/components/toast";
 
 export default function NewNotePage() {
@@ -36,7 +36,6 @@ export default function NewNotePage() {
   const [error, setError] = useState("");
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const tilt = getTilt("note-form");
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -124,7 +123,6 @@ export default function NewNotePage() {
             padding: "10px 10px 14px",
             background: "#FFFDF8",
             boxShadow: "0 14px 28px -16px rgba(60,40,20,.5)",
-            transform: `rotate(${tilt}deg)`,
           }}
         >
           {/* Photo area */}
@@ -162,8 +160,7 @@ export default function NewNotePage() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="한 줄 메모 (선택)"
-            className="w-full h-[40px] px-1 border-0 bg-transparent font-hand text-[23px] text-ink-hand outline-none"
-            style={{ color: "#3A352E" }}
+            className="w-full h-[40px] px-1 border-0 bg-transparent text-[15px] text-ink-2 outline-none"
           />
         </div>
 

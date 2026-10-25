@@ -17,8 +17,8 @@ import {
   formatYMD,
   computeUpcoming,
   getPlaceholderGradient,
-  getTilt,
   formatDot,
+  formatFilmDate,
   today,
   parseLocalDate,
 } from "@/lib/utils";
@@ -53,13 +53,13 @@ export default function HomePage() {
 
   const upcoming = startDate
     ? computeUpcoming(
-        startDate,
-        anniversaries.map((a) => ({
-          title: a.title,
-          date: a.date,
-          repeatYearly: a.repeatYearly,
-        }))
-      )
+      startDate,
+      anniversaries.map((a) => ({
+        title: a.title,
+        date: a.date,
+        repeatYearly: a.repeatYearly,
+      }))
+    )
     : [];
 
   // Next plans: planned first, then wish by priority, max 3
@@ -119,11 +119,6 @@ export default function HomePage() {
           className="relative bg-paper-2 border border-line-soft rounded-[6px] p-[26px_22px_18px]"
           style={{ boxShadow: "0 1px 2px rgba(60,40,20,.06),0 14px 28px -18px rgba(60,40,20,.35)" }}
         >
-          {/* Tape */}
-          <div
-            className="absolute top-[-11px] left-1/2 w-[78px] h-[22px] -translate-x-1/2"
-            style={{ background: "rgba(222,208,170,.78)", transform: "translateX(-50%) rotate(-2deg)" }}
-          />
           <div className="text-[13px] text-ink-2">함께한 지</div>
           <div className="flex items-baseline gap-[6px] mt-1">
             <span className="font-display text-[82px] leading-[.9] tracking-tight">
@@ -160,7 +155,6 @@ export default function HomePage() {
               padding: "3px 3px 10px",
               background: "#FFFDF8",
               boxShadow: "0 4px 10px -5px rgba(60,40,20,.45)",
-              transform: "rotate(-5deg)",
             }}
           >
             <span className="block w-full h-full" style={{ background: getPlaceholderGradient("note-preview") }} />
@@ -245,7 +239,7 @@ export default function HomePage() {
               borderStyle: "dashed",
             }}
           >
-            <span className="font-hand text-[20px] text-ink-3 leading-none">
+            <span className="text-[15px] text-ink-3 leading-none">
               둘만의 약속을 만들어 보세요 ✏
             </span>
           </button>
@@ -277,7 +271,7 @@ export default function HomePage() {
                   >
                     {i + 1}.
                   </span>
-                  <span className="font-hand text-[18px] text-ink-hand leading-[1.35]">{r.content}</span>
+                  <span className="text-[15px] text-ink leading-[1.5]">{r.content}</span>
                 </div>
               ))}
               {rules.length > 5 && (
@@ -386,7 +380,6 @@ function RecentMemoryCard({
   onClick: () => void;
 }) {
   const bg = getPlaceholderGradient(memory.id ?? memory.title);
-  const rot = getTilt(memory.id ?? memory.title);
 
   return (
     <button
@@ -396,7 +389,6 @@ function RecentMemoryCard({
         padding: "7px 7px 10px",
         background: "#FFFDF8",
         boxShadow: "0 8px 18px -10px rgba(60,40,20,.4)",
-        transform: `rotate(${rot}deg)`,
       }}
     >
       <div
@@ -415,8 +407,14 @@ function RecentMemoryCard({
             +{memory.photoCount - 1}
           </span>
         )}
+        <span
+          className="absolute bottom-[5px] right-[6px] font-mono text-[10px] leading-none select-none"
+          style={{ color: "#FF8C00", textShadow: "0 0 6px rgba(0,0,0,.5)" }}
+        >
+          {formatFilmDate(memory.date)}
+        </span>
       </div>
-      <div className="font-hand text-[19px] leading-none text-ink-hand whitespace-nowrap overflow-hidden text-ellipsis">
+      <div className="text-[14px] leading-tight text-ink-2 whitespace-nowrap overflow-hidden text-ellipsis">
         {memory.title}
       </div>
       <div className="text-[11px] text-ink-3">{formatDot(memory.date)}</div>
@@ -437,10 +435,10 @@ function WishPlanRow({
 
   const daysLeft = item.targetDate
     ? (() => {
-        const target = parseLocalDate(item.targetDate);
-        const n = Math.round((target.getTime() - today().getTime()) / 86400000);
-        return n;
-      })()
+      const target = parseLocalDate(item.targetDate);
+      const n = Math.round((target.getTime() - today().getTime()) / 86400000);
+      return n;
+    })()
     : null;
 
   const ddStr = daysLeft !== null
