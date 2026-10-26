@@ -125,7 +125,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .animate-ola-fade {
-  animation: olaFade 0.2s;
+  animation: olaFade 0.25s ease-out;
 }
 
 .animate-ola-pulse {

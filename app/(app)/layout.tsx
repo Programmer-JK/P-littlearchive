@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { TabBar } from "@/components/tab-bar";
 import { ToastProvider } from "@/components/toast";
+import { PageTransition } from "@/components/page-transition";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, coupleData, loading } = useAuth();
@@ -33,7 +34,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <ToastProvider>
       <div className="relative h-full">
         <main className="absolute inset-0 overflow-y-auto pt-[60px] pb-[120px]">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
         <TabBar />
       </div>
