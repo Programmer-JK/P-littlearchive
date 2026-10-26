@@ -12,7 +12,7 @@ export function TabBar() {
   const isHome = pathname === "/home" || pathname === "/";
   const isAlbum = pathname.startsWith("/album");
   const isWish = pathname.startsWith("/wishlist");
-  const isTimeline = pathname.startsWith("/timeline");
+  const isRules = pathname.startsWith("/rules");
 
   const activeColor = "#50634A";
   const inactiveColor = "#9A9182";
@@ -77,17 +77,14 @@ export function TabBar() {
         </button>
 
         <button
-          onClick={() => router.push("/timeline")}
+          onClick={() => router.push("/rules")}
           className="h-[52px] border-0 bg-transparent flex flex-col items-center justify-center gap-[3px] cursor-pointer"
-          style={{ color: tabColor(isTimeline) }}
+          style={{ color: tabColor(isRules) }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M7 3v18" />
-            <circle cx="7" cy="7" r="2" />
-            <circle cx="7" cy="16" r="2" />
-            <path d="M11 7h9M11 16h6" />
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
           </svg>
-          <span className="text-[11px]">타임라인</span>
+          <span className="text-[11px]">우리의 약속</span>
         </button>
       </div>
 

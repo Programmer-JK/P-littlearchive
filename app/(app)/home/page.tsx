@@ -8,8 +8,6 @@ import {
   useRecentMemories,
   useWishlist,
   useAnniversaries,
-  useUnreadNotes,
-  useUnreadSongs,
   useRules,
 } from "@/lib/firestore-hooks";
 import {
@@ -44,8 +42,6 @@ export default function HomePage() {
   const { items: wishItems } = useWishlist(coupleId);
   const { anniversaries } = useAnniversaries(coupleId);
   const { rules } = useRules(coupleId);
-  const unreadCount = useUnreadNotes(coupleId, myUid);
-  const unreadSongCount = useUnreadSongs(coupleId, myUid);
 
   const startDate = couple?.startDate ?? "";
   const count = startDate ? dayCount(startDate) : 0;
@@ -72,9 +68,6 @@ export default function HomePage() {
       return (PRIORITY_ORDER[a.priority] ?? 2) - (PRIORITY_ORDER[b.priority] ?? 2);
     })
     .slice(0, 3);
-
-  const hasUnread = unreadCount > 0;
-  const hasUnreadSong = unreadSongCount > 0;
 
   return (
     <div className="px-5 flex flex-col gap-7">
@@ -140,64 +133,6 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      )}
-
-      {/* Unread note card */}
-      {hasUnread && (
-        <button
-          onClick={() => router.push("/album?tab=notes")}
-          className="-mt-3 flex items-center gap-[14px] p-[12px_14px_12px_12px] rounded-[12px] cursor-pointer text-left"
-          style={{ border: "1px solid #E5CFC3", background: "#F7EDE5" }}
-        >
-          <span
-            className="flex-none w-[50px] h-[62px]"
-            style={{
-              padding: "3px 3px 10px",
-              background: "#FFFDF8",
-              boxShadow: "0 4px 10px -5px rgba(60,40,20,.45)",
-            }}
-          >
-            <span className="block w-full h-full" style={{ background: getPlaceholderGradient("note-preview") }} />
-          </span>
-          <span className="flex-1 min-w-0 flex flex-col gap-[3px]">
-            <span className="font-heading text-[16px] text-ink">
-              {partnerName}이/가 사진을 보냈어요
-            </span>
-            <span className="text-[13px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: "#8A6A5A" }}>
-              새 사진 {unreadCount}장
-            </span>
-          </span>
-          <span className="text-[13px] text-clay-deep">보기 →</span>
-        </button>
-      )}
-
-      {/* Unread song card */}
-      {hasUnreadSong && (
-        <button
-          onClick={() => router.push("/album?tab=songs")}
-          className="-mt-3 flex items-center gap-[14px] p-[12px_14px_12px_12px] rounded-[12px] cursor-pointer text-left"
-          style={{ border: "1px solid #B9C3AC", background: "#E4E9DB" }}
-        >
-          <span
-            className="flex-none w-[44px] h-[44px] rounded-[10px] flex items-center justify-center"
-            style={{ background: "#50634A" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18V5l12-2v13" />
-              <circle cx="6" cy="18" r="3" />
-              <circle cx="18" cy="16" r="3" />
-            </svg>
-          </span>
-          <span className="flex-1 min-w-0 flex flex-col gap-[3px]">
-            <span className="font-heading text-[16px] text-ink">
-              {partnerName}이/가 노래를 보냈어요
-            </span>
-            <span className="text-[13px]" style={{ color: "#3F5139" }}>
-              새 노래 {unreadSongCount}곡
-            </span>
-          </span>
-          <span className="text-[13px]" style={{ color: "#50634A" }}>보기 →</span>
-        </button>
       )}
 
       {/* Quick add */}

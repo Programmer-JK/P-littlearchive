@@ -7,18 +7,13 @@ import {
   orderBy,
   limit,
   onSnapshot,
-  where,
-  type Query,
-  type DocumentData,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import type {
   Memory,
   WishlistItem,
   Anniversary,
-  Note,
   Photo,
-  Song,
   Rule,
 } from "./types";
 
@@ -133,87 +128,6 @@ export function useAnniversaries(coupleId: string | null) {
   }, [coupleId]);
 
   return { anniversaries, loading };
-}
-
-// ── Notes ─────────────────────────────────────────────────────────────────────
-
-export function useNotes(coupleId: string | null) {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!coupleId) { setLoading(false); return; }
-    const q = query(
-      collection(db, "couples", coupleId, "notes"),
-      orderBy("createdAt", "desc")
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setNotes(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Note)));
-      setLoading(false);
-    });
-    return unsub;
-  }, [coupleId]);
-
-  return { notes, loading };
-}
-
-export function useUnreadNotes(coupleId: string | null, myUid: string | null) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!coupleId || !myUid) return;
-    // composite index 없이도 동작하도록 to만 필터링 후 JS에서 seenAt 검사
-    const q = query(
-      collection(db, "couples", coupleId, "notes"),
-      where("to", "==", myUid)
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setCount(snap.docs.filter((d) => d.data().seenAt === null).length);
-    });
-    return unsub;
-  }, [coupleId, myUid]);
-
-  return count;
-}
-
-// ── Songs ─────────────────────────────────────────────────────────────────────
-
-export function useSongs(coupleId: string | null) {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!coupleId) { setLoading(false); return; }
-    const q = query(
-      collection(db, "couples", coupleId, "songs"),
-      orderBy("createdAt", "desc")
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setSongs(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Song)));
-      setLoading(false);
-    });
-    return unsub;
-  }, [coupleId]);
-
-  return { songs, loading };
-}
-
-export function useUnreadSongs(coupleId: string | null, myUid: string | null) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!coupleId || !myUid) return;
-    const q = query(
-      collection(db, "couples", coupleId, "songs"),
-      where("to", "==", myUid)
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setCount(snap.docs.filter((d) => d.data().seenAt === null).length);
-    });
-    return unsub;
-  }, [coupleId, myUid]);
-
-  return count;
 }
 
 // ── Rules ──────────────────────────────────────────────────────────────────────

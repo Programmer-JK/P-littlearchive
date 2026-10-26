@@ -1,8 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
-import { gwa } from "@/lib/utils";
 
 interface AddBottomSheetProps {
   onClose: () => void;
@@ -10,12 +8,6 @@ interface AddBottomSheetProps {
 
 export function AddBottomSheet({ onClose }: AddBottomSheetProps) {
   const router = useRouter();
-  const { coupleData, user } = useAuth();
-
-  const partnerUid = coupleData?.partnerUid;
-  const partnerName = partnerUid
-    ? (coupleData?.members[partnerUid]?.displayName ?? "파트너")
-    : "파트너";
 
   function go(path: string) {
     onClose();
@@ -71,37 +63,20 @@ export function AddBottomSheet({ onClose }: AddBottomSheetProps) {
         </button>
 
         <button
-          onClick={() => go("/notes/new")}
+          onClick={() => go("/rules?new=1")}
           className="min-h-[72px] px-[16px] py-[14px] rounded-[14px] border border-line bg-polaroid flex items-center gap-[14px] cursor-pointer text-left hover:border-sage-line transition-colors"
         >
-          <span className="w-[44px] h-[44px] flex-none rounded-[10px] bg-line-faint flex items-center justify-center text-ink-2">
+          <span className="w-[44px] h-[44px] flex-none rounded-[10px] bg-seg-track flex items-center justify-center text-ink-2">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 3 10 14" />
-              <path d="M21 3l-7 18-4-7-7-4z" />
+              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
             </svg>
           </span>
           <span className="flex flex-col gap-[3px]">
-            <span className="font-heading text-[17px] text-ink">{partnerName}에게 사진 보내기</span>
-            <span className="text-[13px] text-ink-3">지금 내 모습, 보여주고 싶은 것 한 장</span>
+            <span className="font-heading text-[17px] text-ink">약속 추가하기</span>
+            <span className="text-[13px] text-ink-3">둘이 함께 지키고 싶은 약속을 적어요</span>
           </span>
         </button>
 
-        <button
-          onClick={() => go("/songs/new")}
-          className="min-h-[72px] px-[16px] py-[14px] rounded-[14px] border border-line bg-polaroid flex items-center gap-[14px] cursor-pointer text-left hover:border-sage-line transition-colors"
-        >
-          <span className="w-[44px] h-[44px] flex-none rounded-[10px] flex items-center justify-center" style={{ background: "#E4E9DB", color: "#50634A" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18V5l12-2v13" />
-              <circle cx="6" cy="18" r="3" />
-              <circle cx="18" cy="16" r="3" />
-            </svg>
-          </span>
-          <span className="flex flex-col gap-[3px]">
-            <span className="font-heading text-[17px] text-ink">{partnerName}에게 노래 보내기</span>
-            <span className="text-[13px] text-ink-3">유튜브 뮤직 링크로 공유해요</span>
-          </span>
-        </button>
       </div>
     </div>
   );

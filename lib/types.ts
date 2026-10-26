@@ -83,34 +83,6 @@ export interface Anniversary {
   createdAt: Timestamp;
 }
 
-// couples/{coupleId}/notes/{noteId}
-export interface Note {
-  id?: string;
-  from: string;
-  to: string;
-  storagePath: string;
-  thumbPath: string;
-  photoUrl: string;
-  thumbUrl: string;
-  message: string;
-  seenAt: Timestamp | null;
-  createdAt: Timestamp;
-}
-
-// couples/{coupleId}/songs/{songId}
-export interface Song {
-  id?: string;
-  from: string;
-  to: string;
-  videoId: string;
-  title: string;
-  artist: string;
-  thumbnailUrl: string;
-  message: string;
-  seenAt: Timestamp | null;
-  createdAt: Timestamp;
-}
-
 // couples/{coupleId}/rules/{ruleId}
 export interface Rule {
   id?: string;

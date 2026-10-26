@@ -94,6 +94,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   50% { opacity: 1; }
 }
 
+@keyframes holePunch {
+  0%   { transform: scale(0); opacity: 0; }
+  55%  { transform: scale(1.25); opacity: 1; }
+  75%  { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.hole-punch {
+  animation: holePunch 0.38s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes stampIn {
+  0%   { transform: rotate(-12deg) scale(1.6); opacity: 0; }
+  45%  { transform: rotate(-12deg) scale(0.92); opacity: 1; }
+  65%  { transform: rotate(-12deg) scale(1.04); opacity: 1; }
+  100% { transform: rotate(-12deg) scale(1); opacity: 1; }
+}
+
+.stamp-in {
+  animation: stampIn 0.32s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
 .animate-ola-up {
   animation: olaUp 0.32s cubic-bezier(.2,.8,.2,1);
 }
